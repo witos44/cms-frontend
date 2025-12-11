@@ -15,7 +15,8 @@ import {
 import { logout } from "@/app/actions/auth";
 
 export default async function AdminSidebar() {
-  const supabase = createClient();
+  // ❌ Supabase client harus di-`await`
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -40,7 +41,9 @@ export default async function AdminSidebar() {
       <SidebarContent className="flex flex-col h-full justify-between">
         <div>
           <SidebarGroup>
-            <SidebarGroupLabel className="text-blue-700 bg-white text-2xl px-4 pt-4">Admin Panel</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-blue-700 bg-white text-2xl px-4 pt-4">
+              Admin Panel
+            </SidebarGroupLabel>
             <SidebarGroupContent className="px-2">
               <SidebarMenu>
                 {menuItems.map((item) => (
@@ -55,13 +58,13 @@ export default async function AdminSidebar() {
           </SidebarGroup>
         </div>
 
-        {/* 3. Logout dipindah ke bawah agar tidak menumpuk dengan menu utama */}
+        {/* Logout tetap di bawah */}
         <div className="p-4 border-t border-gray-700">
           <form action={logout}>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton 
-                  className="w-full text-red-400 hover:bg-red-900/20 hover:text-red-500" 
+                <SidebarMenuButton
+                  className="w-full text-red-400 hover:bg-red-900/20 hover:text-red-500"
                   type="submit"
                 >
                   Logout

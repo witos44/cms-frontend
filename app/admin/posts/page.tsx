@@ -1,7 +1,7 @@
-//app/admin/posts/page.tsx
+// app/admin/posts/page.tsx
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server"; // ganti dari supabase menjadi createClient
+import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,8 +12,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+// definisi tipe Post
+type Post = {
+  id: string;
+  title: string;
+  created_at: string;
+};
+
 export default async function AdminPostsPage() {
-  const supabase = createClient(); // buat client server-only
+  const supabase = await createClient(); // ✅ harus await
 
   const { data: posts } = await supabase
     .from("posts")
@@ -39,7 +46,7 @@ export default async function AdminPostsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {posts?.map((post) => (
+            {posts?.map((post: Post) => (
               <TableRow key={post.id}>
                 <TableCell>{post.title}</TableCell>
                 <TableCell>
