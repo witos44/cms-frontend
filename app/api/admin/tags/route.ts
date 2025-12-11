@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
-// POST: buat tag baru
+// =====================
+// POST: Create new tag
+// =====================
 export async function POST(req: NextRequest) {
+  const supabase = createClient();
   const body = await req.json();
   const { name, slug } = body;
+
   if (!name || !slug) {
-    return NextResponse.json({ error: "name and slug required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "name and slug required" },
+      { status: 400 }
+    );
   }
 
   const { data, error } = await supabase
@@ -15,13 +22,28 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
   return NextResponse.json({ data });
 }
 
-// GET: semua tag
+
+// =====================
+// GET: All tags
+// =====================
 export async function GET() {
-  const { data, error } = await supabase.from("tags").select("*").order("name");
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("tags")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
   return NextResponse.json({ data });
 }

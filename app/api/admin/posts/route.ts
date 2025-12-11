@@ -1,11 +1,10 @@
-//app/api/admin/posts/route.ts
-
+// app/api/admin/posts/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server"; // gunakan factory, bukan instance global
 
 // ========== Create Posts ==========
-
 export async function POST(req: NextRequest) {
+  const supabase = createClient(); // <— bikin client per request
   const body = await req.json();
 
   const { data, error } = await supabase
@@ -15,8 +14,8 @@ export async function POST(req: NextRequest) {
         title: body.title,
         slug: body.slug,
         content: body.content || "",
-        status: "draft"
-      }
+        status: "draft",
+      },
     ])
     .select()
     .single();
@@ -30,6 +29,8 @@ export async function POST(req: NextRequest) {
 
 // ======= List Posts =======
 export async function GET() {
+  const supabase = createClient();
+
   const { data, error } = await supabase
     .from("posts")
     .select("*")
@@ -41,4 +42,3 @@ export async function GET() {
 
   return NextResponse.json({ data });
 }
-

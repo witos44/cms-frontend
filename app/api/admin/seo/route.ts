@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
-// POST: upsert SEO meta berdasarkan postId
+// ==============================
+// POST: upsert SEO meta
+// ==============================
 export async function POST(req: NextRequest) {
+  const supabase = createClient(); // WAJIB
   const body = await req.json();
-  const { postId, meta_title, meta_description, og_image, canonical_url } = body;
+
+  const {
+    postId,
+    meta_title,
+    meta_description,
+    og_image,
+    canonical_url
+  } = body;
 
   if (!postId) {
     return NextResponse.json({ error: "postId required" }, { status: 400 });
@@ -18,20 +28,31 @@ export async function POST(req: NextRequest) {
         meta_title,
         meta_description,
         og_image,
-        canonical_url,
+        canonical_url
       },
       { onConflict: "post_id" }
     )
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
   return NextResponse.json({ data });
 }
 
-// GET: semua SEO meta (opsional, biasanya tidak perlu)
+
+// ==============================
+// GET: semua SEO meta
+// ==============================
 export async function GET() {
+  const supabase = createClient(); // WAJIB
   const { data, error } = await supabase.from("seo_meta").select("*");
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
   return NextResponse.json({ data });
 }

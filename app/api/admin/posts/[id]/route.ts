@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server"; // WAJIB
+  
 
-// ✅ GET: ambil detail post
+// =========================
+// GET DETAIL POST
+// =========================
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const supabase = createClient();
   const { id } = await params;
+
   if (!id || id === "undefined") {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
   }
@@ -24,23 +29,29 @@ export async function GET(
   return NextResponse.json({ data });
 }
 
-// ✅ PUT: update post
+
+// =========================
+// UPDATE POST
+// =========================
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const supabase = createClient();
   const { id } = await params;
+
   if (!id || id === "undefined") {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
   }
 
   const body = await req.json();
+
   const { error } = await supabase
     .from("posts")
     .update({
       title: body.title,
       slug: body.slug,
-      content: body.content,
+      content: body.content || "",
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -52,12 +63,18 @@ export async function PUT(
   return NextResponse.json({ success: true });
 }
 
-// ✅ DELETE: hapus post (hard delete)
+
+
+// =========================
+// DELETE POST
+// =========================
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const supabase = createClient();
   const { id } = await params;
+
   if (!id || id === "undefined") {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
   }
@@ -68,7 +85,6 @@ export async function DELETE(
     .eq("id", id);
 
   if (error) {
-    console.error("Delete error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
