@@ -1,4 +1,3 @@
-// app/admin/middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase/server";
 
@@ -11,9 +10,7 @@ export async function middleware(req: NextRequest) {
 
   const { data: userRoles, error } = await supabase
     .from("user_roles")
-    .select(`
-      roles!user_roles_role_id_fkey(name)
-    `)
+    .select(`roles!user_roles_role_id_fkey(name)`)
     .eq("user_id", user.id);
 
   if (error || !userRoles || userRoles.length === 0) {
