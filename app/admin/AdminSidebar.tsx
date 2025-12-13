@@ -1,79 +1,17 @@
 // app/admin/AdminSidebar.tsx
+"use client";
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { logout } from "@/app/actions/auth";
 
-export default async function AdminSidebar() {
-  // ❌ Supabase client harus di-`await`
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: userRoles } = await supabase
-    .from("user_roles")
-    .select("roles!user_roles_role_id_fkey(name)")
-    .eq("user_id", user?.id ?? "");
-
-  const roleName = userRoles?.[0]?.roles?.[0]?.name || "viewer";
-
-  const menuItems = [
-    { label: "Dashboard", href: "/admin" },
-    { label: "Posts", href: "/admin/posts" },
-    { label: "Tags", href: "/admin/tags" },
-    ...(roleName === "admin" ? [{ label: "Users", href: "/admin/users" }] : []),
-  ];
-
+export default function AdminSidebar() {
   return (
-    <Sidebar className="fixed top-16 h-[calc(100vh-64px)] w-[256px] bg-white text-black p-0 z-40 border-r border-gray-700">
-      <SidebarContent className="flex flex-col h-full justify-between">
-        <div>
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-blue-700 bg-white text-2xl px-4 pt-4">
-              Admin Panel
-            </SidebarGroupLabel>
-            <SidebarGroupContent className="px-2">
-              <SidebarMenu>
-                {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild className="hover:bg-gray-700 hover:text-white">
-                      <Link href={item.href}>{item.label}</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </div>
-
-        {/* Logout tetap di bawah */}
-        <div className="p-4 border-t border-gray-700">
-          <form action={logout}>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  className="w-full text-red-400 hover:bg-red-900/20 hover:text-red-500"
-                  type="submit"
-                >
-                  Logout
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </form>
-        </div>
-      </SidebarContent>
-    </Sidebar>
+    <aside className="w-64 border-r p-4">
+      <h2 className="text-lg font-bold mb-4">Admin Panel</h2>
+      <nav className="space-y-2">
+        <Link href="/admin">Dashboard</Link>
+        <Link href="/admin/posts">Posts</Link>
+        <Link href="/admin/tags">Tags</Link>
+      </nav>
+    </aside>
   );
 }

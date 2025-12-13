@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import MainNav from "@/components/MainNav";
-import Footer from "@/components/Footer"; 
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <MainNav /> 
-        
-        {/* Tambahkan pt-16 (padding-top: 4rem / 64px) untuk memberi ruang pada MainNav yang fixed 
-           agar konten tidak tertutup MainNav.
-        */}
-        <main className="pt-16"> 
-          {children} 
+        <MainNav />
+
+        <main className="pt-16">
+          {children}
         </main>
-        
+
         <Footer />
       </body>
     </html>
