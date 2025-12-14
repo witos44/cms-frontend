@@ -16,8 +16,24 @@ export default function LoginPage() {
     });
 
     const data = await res.json();
-    if (res.ok) {
-      window.location.href = "/admin/posts";
+    if (res.ok && data.user) {
+      // ✅ Simpan sesi ke localStorage agar dashboard bisa membacanya
+      const now = new Date().getTime();
+      const expiresAt = now + 1000 * 60 * 60 * 24 * 7; // 7 hari
+
+      const session = {
+        access_token: data.user.aud ? "dummy" : "", // Supabase JS client perlu ini agar tidak error
+        token_type: "bearer",
+        user: data.user,
+        expires_at: Math.floor(expiresAt / 1000),
+      };
+
+      localStorage.setItem('supabase.auth.token', JSON.stringify({
+        currentSession: session,
+        lastSignInTime: new Date().toISOString(),
+      }));
+
+      window.location.href = "/dashboard";
     } else {
       setError(data.error || "Login gagal");
     }
@@ -46,7 +62,7 @@ export default function LoginPage() {
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded"
+          className="w-full bg-black text-white py-2 rounded"
         >
           Login
         </button>

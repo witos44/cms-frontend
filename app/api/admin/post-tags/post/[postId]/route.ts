@@ -1,13 +1,14 @@
+// app/api/admin/post-tags/post/[postId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ postId: string }> }
+  req: NextRequest,
+  { params }: { params: { postId: string } }
 ) {
-  const { postId } = await params;
+  const supabase = await createClient(); // 🔥 FIX DI SINI
 
-  const supabase = createClient();
+  const { postId } = params;
 
   const { data, error } = await supabase
     .from("post_tags")
@@ -18,6 +19,5 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const tagIds = data?.map((pt) => pt.tag_id) ?? [];
-  return NextResponse.json({ tagIds });
+  return NextResponse.json(data);
 }

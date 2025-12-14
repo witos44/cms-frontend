@@ -1,3 +1,4 @@
+// app/api/admin/seo/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -5,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 // POST: upsert SEO meta
 // ==============================
 export async function POST(req: NextRequest) {
-  const supabase = createClient(); // WAJIB
+  const supabase = await createClient();
   const body = await req.json();
 
   const {
@@ -42,12 +43,11 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ data });
 }
 
-
 // ==============================
 // GET: semua SEO meta
 // ==============================
 export async function GET() {
-  const supabase = createClient(); // WAJIB
+  const supabase = await createClient();
   const { data, error } = await supabase.from("seo_meta").select("*");
 
   if (error) {

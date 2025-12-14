@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -17,14 +18,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* ✅ Cegah deteksi otomatis oleh browser (terutama iOS & ekstensi) */}
+        <meta
+          name="format-detection"
+          content="telephone=no, date=no, email=no, address=no"
+        />
+        {/* ✅ Cegah penerjemahan otomatis oleh Google Translate */}
+        <meta name="google" content="notranslate" />
+        <meta httpEquiv="Content-Language" content="en" />
+      </head>
       <body className={inter.className}>
         <MainNav />
-
-        <main className="pt-16">
-          {children}
-        </main>
-
+        <main className="pt-16">{children}</main>
         <Footer />
       </body>
     </html>

@@ -1,3 +1,4 @@
+// app/page.tsx
 import Link from "next/link";
 
 export default function HomePage() {
@@ -15,7 +16,11 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           {/* Left Column */}
           <div className="md:w-1/2 space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            {/* ✅ Tambahkan suppressHydrationWarning pada elemen yang berpotensi dimodifikasi browser */}
+            <h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
+              suppressHydrationWarning
+            >
               Secure Your Remote Work,
               <br />
               <span className="text-blue-600">Without Compromise.</span>
@@ -39,7 +44,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right Column - Decorative (simplified to match your aesthetic) */}
+          {/* Right Column - Decorative */}
           <div className="md:w-1/2 relative">
             <div className="aspect-video bg-gray-50 rounded-xl p-6 flex items-center justify-center border border-gray-200">
               <div className="text-center">

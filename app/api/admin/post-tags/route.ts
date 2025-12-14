@@ -1,9 +1,10 @@
+// app/api/admin/post-tags/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 // POST: tambahkan tag ke post
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const body = await req.json();
   const { postId, tagId } = body;
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
 
 // DELETE: hapus kaitan tag dari post
 export async function DELETE(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const body = await req.json();
   const { postId, tagId } = body;

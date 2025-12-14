@@ -1,8 +1,9 @@
+// app/api/admin/publish/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient(); // WAJIB
+  const supabase = await createClient();
   const body = await req.json();
 
   const { error } = await supabase
