@@ -1,14 +1,13 @@
-// app/api/admin/post-tags/post/[postId]/route.ts
+// app/api/admin/post-tags/[postId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { postId: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const supabase = await createClient(); // 🔥 FIX DI SINI
-
-  const { postId } = params;
+  const supabase = await createClient();
+  const { postId } = await params;
 
   const { data, error } = await supabase
     .from("post_tags")
