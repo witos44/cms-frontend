@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function MainNav() {
@@ -72,44 +72,44 @@ export default function MainNav() {
         </Button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t">
-          <div className="p-4 space-y-3">
-            <NavMobileItem title="Security Tools">
-              <MenuItem href="/vpn">Best VPNs</MenuItem>
-              <MenuItem href="/password-managers">Password Managers</MenuItem>
-              <MenuItem href="/antivirus">Antivirus</MenuItem>
-              <MenuItem href="/secure-cloud">Secure Cloud Storage</MenuItem>
-              <MenuItem href="/hardware-keys">2FA Hardware Keys</MenuItem>
-              <MenuItem href="/secure-email">Secure Email Providers</MenuItem>
-            </NavMobileItem>
+        <div className="md:hidden fixed inset-0 z-50 bg-white overflow-y-auto pt-16 pb-4 px-4">
+          <div className="space-y-6">
+            <NavMobileGroup title="Security Tools">
+              <MenuItem href="/vpn" onClose={() => setMobileMenuOpen(false)}>Best VPNs</MenuItem>
+              <MenuItem href="/password-managers" onClose={() => setMobileMenuOpen(false)}>Password Managers</MenuItem>
+              <MenuItem href="/antivirus" onClose={() => setMobileMenuOpen(false)}>Antivirus</MenuItem>
+              <MenuItem href="/secure-cloud" onClose={() => setMobileMenuOpen(false)}>Secure Cloud Storage</MenuItem>
+              <MenuItem href="/hardware-keys" onClose={() => setMobileMenuOpen(false)}>2FA Hardware Keys</MenuItem>
+              <MenuItem href="/secure-email" onClose={() => setMobileMenuOpen(false)}>Secure Email Providers</MenuItem>
+            </NavMobileGroup>
 
-            <NavMobileItem title="Work From Anywhere">
-              <MenuItem href="/remote-jobs">Remote Job Boards</MenuItem>
-              <MenuItem href="/remote-tools">Team Collaboration Tools</MenuItem>
-              <MenuItem href="/best-laptops">Best Laptops for Remote Work</MenuItem>
-              <MenuItem href="/best-headsets">Best Headsets & Webcams</MenuItem>
-            </NavMobileItem>
+            <NavMobileGroup title="Work From Anywhere">
+              <MenuItem href="/remote-jobs" onClose={() => setMobileMenuOpen(false)}>Remote Job Boards</MenuItem>
+              <MenuItem href="/remote-tools" onClose={() => setMobileMenuOpen(false)}>Team Collaboration Tools</MenuItem>
+              <MenuItem href="/best-laptops" onClose={() => setMobileMenuOpen(false)}>Best Laptops for Remote Work</MenuItem>
+              <MenuItem href="/best-headsets" onClose={() => setMobileMenuOpen(false)}>Best Headsets & Webcams</MenuItem>
+            </NavMobileGroup>
 
-            <NavMobileItem title="Deals">
-              <MenuItem href="/deals/vpn">VPN Deals</MenuItem>
-              <MenuItem href="/deals/software">Software Discounts</MenuItem>
-              <MenuItem href="/deals/gear">Remote Gear Deals</MenuItem>
-            </NavMobileItem>
+            <NavMobileGroup title="Deals">
+              <MenuItem href="/deals/vpn" onClose={() => setMobileMenuOpen(false)}>VPN Deals</MenuItem>
+              <MenuItem href="/deals/software" onClose={() => setMobileMenuOpen(false)}>Software Discounts</MenuItem>
+              <MenuItem href="/deals/gear" onClose={() => setMobileMenuOpen(false)}>Remote Gear Deals</MenuItem>
+            </NavMobileGroup>
 
-            <NavMobileItem title="Guides">
-              <MenuItem href="/guides/cybersecurity-basics">Cybersecurity Basics</MenuItem>
-              <MenuItem href="/guides/remote-work-starter">Remote Work Starter Kit</MenuItem>
-              <MenuItem href="/guides/secure-setup">Secure Remote Workspace</MenuItem>
-              <MenuItem href="/guides/privacy">Privacy Essentials</MenuItem>
-            </NavMobileItem>
+            <NavMobileGroup title="Guides">
+              <MenuItem href="/guides/cybersecurity-basics" onClose={() => setMobileMenuOpen(false)}>Cybersecurity Basics</MenuItem>
+              <MenuItem href="/guides/remote-work-starter" onClose={() => setMobileMenuOpen(false)}>Remote Work Starter Kit</MenuItem>
+              <MenuItem href="/guides/secure-setup" onClose={() => setMobileMenuOpen(false)}>Secure Remote Workspace</MenuItem>
+              <MenuItem href="/guides/privacy" onClose={() => setMobileMenuOpen(false)}>Privacy Essentials</MenuItem>
+            </NavMobileGroup>
 
-            <NavMobileItem title="Reviews">
-              <MenuItem href="/reviews/software">Software Reviews</MenuItem>
-              <MenuItem href="/reviews/hardware">Hardware Reviews</MenuItem>
-              <MenuItem href="/reviews/platforms">Remote Job Platforms</MenuItem>
-            </NavMobileItem>
+            <NavMobileGroup title="Reviews">
+              <MenuItem href="/reviews/software" onClose={() => setMobileMenuOpen(false)}>Software Reviews</MenuItem>
+              <MenuItem href="/reviews/hardware" onClose={() => setMobileMenuOpen(false)}>Hardware Reviews</MenuItem>
+              <MenuItem href="/reviews/platforms" onClose={() => setMobileMenuOpen(false)}>Remote Job Platforms</MenuItem>
+            </NavMobileGroup>
           </div>
         </div>
       )}
@@ -117,7 +117,6 @@ export default function MainNav() {
   );
 }
 
-// Desktop: Gunakan Popover seperti sebelumnya
 function NavDesktopItem({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="relative group">
@@ -131,8 +130,7 @@ function NavDesktopItem({ title, children }: { title: string; children: React.Re
   );
 }
 
-// Mobile: Gunakan collapsible accordion
-function NavMobileItem({ title, children }: { title: string; children: React.ReactNode }) {
+function NavMobileGroup({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -153,24 +151,21 @@ function NavMobileItem({ title, children }: { title: string; children: React.Rea
   );
 }
 
-function MenuItem({ href, children }: { href: string; children: React.ReactNode }) {
+// ✅ Tambahkan tipe untuk MenuItem
+interface MenuItemProps {
+  href: string;
+  children: React.ReactNode;
+  onClose?: () => void;
+}
+
+function MenuItem({ href, children, onClose }: MenuItemProps) {
   return (
     <Link
       href={href}
       className="block rounded px-3 py-2 text-sm transition hover:bg-gray-100"
-      onClick={(e) => {
-        // Tutup mobile menu saat klik
-        const mobileMenu = document.querySelector('[class*="md:hidden"]');
-        if (mobileMenu) {
-          const button = mobileMenu.previousElementSibling?.querySelector('button');
-          button?.click();
-        }
-      }}
+      onClick={onClose}
     >
       {children}
     </Link>
   );
 }
-
-// Impor ikon yang dibutuhkan
-import { ChevronDown } from "lucide-react";
