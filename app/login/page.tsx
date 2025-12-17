@@ -1,41 +1,26 @@
 // app/login/page.tsx
 "use client";
 import { useState } from "react";
+import { createAuthClient } from "@/lib/supabase/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    
+    const supabase = createAuthClient();
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
-    const data = await res.json();
-    if (res.ok && data.user) {
-      // ✅ Simpan sesi ke localStorage agar dashboard bisa membacanya
-      const now = new Date().getTime();
-      const expiresAt = now + 1000 * 60 * 60 * 24 * 7; // 7 hari
-
-      const session = {
-        access_token: data.user.aud ? "dummy" : "", // Supabase JS client perlu ini agar tidak error
-        token_type: "bearer",
-        user: data.user,
-        expires_at: Math.floor(expiresAt / 1000),
-      };
-
-      localStorage.setItem('supabase.auth.token', JSON.stringify({
-        currentSession: session,
-        lastSignInTime: new Date().toISOString(),
-      }));
-
-      window.location.href = "/dashboard";
+    if (authError) {
+      setError(authError.message);
     } else {
-      setError(data.error || "Login gagal");
+      // Supabase otomatis menyimpan sesi ke cookie (HTTP-only) dan localStorage
+      router.push("/dashboard");
     }
   };
 

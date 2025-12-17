@@ -1,6 +1,6 @@
-// app/dashboard/components/navbar/Navbar.tsx
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, Moon, Sun, User } from 'lucide-react';
@@ -14,6 +14,19 @@ import {
 
 export function DashboardNavbar() {
   const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // ✅ PENTING: cegah hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Render placeholder yang IDENTIK server & client
+    return (
+      <header className="border-b bg-background px-4 py-3 h-14" />
+    );
+  }
 
   return (
     <header className="border-b bg-background px-4 py-3 flex items-center justify-between">

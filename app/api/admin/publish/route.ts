@@ -1,20 +1,26 @@
-// app/api/admin/publish/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const body = await req.json();
+  const { id, category } = await req.json();
+
+  if (!id || !category) {
+    return NextResponse.json(
+      { error: 'Missing id or category' },
+      { status: 400 }
+    );
+  }
+
+  const supabase = createAdminClient();
 
   const { error } = await supabase
-    .from("posts")
+    .from('posts')
     .update({
-      status: "published",
-      section: body.section,
-      category_slug: body.category_slug,
-      published_at: new Date().toISOString()
+      status: 'published',
+      category, // ✅ FIX UTAMA
+      published_at: new Date().toISOString(),
     })
-    .eq("id", body.postId);
+    .eq('id', id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

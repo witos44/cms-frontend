@@ -1,13 +1,14 @@
-// app/dashboard/layout.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { DashboardSidebar } from './components/sidebar/Sidebar';
+import { DashboardNavbar } from './components/navbar/Navbar';
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const router = useRouter();
 
@@ -18,5 +19,17 @@ export default function DashboardLayout({
     }
   }, [router]);
 
-  return <>{children}</>;
+  return (
+    <div className="flex h-screen bg-background">
+      <DashboardSidebar />
+
+      <div className="flex-1 flex flex-col">
+        <DashboardNavbar />
+
+        <main className="flex-1 p-6 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }

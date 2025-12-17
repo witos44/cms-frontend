@@ -36,30 +36,36 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { id } = await params;
+  try {
+    const supabase = await createClient();
+    const { id } = await params;
 
-  if (!id || id === "undefined") {
-    return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    if (!id || id === "undefined") {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
+    const body = await req.json();
+
+    const { error } = await supabase
+      .from("posts")
+      .update({
+        title: body.title,
+        slug: body.slug,
+        content: body.content || "",
+        // updated_at: new Date().toISOString(), // 💡 Sementara dihapus jika kolom tidak ada
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Update error:", error); // 🔥 Log ke Vercel
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (e: any) {
+    console.error("Unexpected error:", e);
+    return NextResponse.json({ error: e.message || "Internal server error" }, { status: 500 });
   }
-
-  const body = await req.json();
-
-  const { error } = await supabase
-    .from("posts")
-    .update({
-      title: body.title,
-      slug: body.slug,
-      content: body.content || "",
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ success: true });
 }
 
 // =========================
