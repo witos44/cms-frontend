@@ -31,7 +31,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
                 href="/guides/remote-work-starter"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition inline-block text-center"
+                className="bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition inline-block text-center"
               >
                 Start Your Secure Setup
               </Link>
@@ -46,15 +46,15 @@ export default function HomePage() {
 
           {/* Right Column - Decorative */}
           <div className="md:w-1/2 relative">
-            <div className="aspect-video bg-gray-50 rounded-xl p-6 flex items-center justify-center border border-gray-200">
+            <div className="aspect-video bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 rounded-xl p-6 flex items-center justify-center border border-gray-200">
               <div className="text-center">
                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-10 h-10 text-blue-600">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 6a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800">Trusted by 50K+ Remote Workers</h3>
-                <p className="text-sm text-gray-500 mt-2">Real users. Real results. Zero fluff.</p>
+                <h3 className="text-xl font-semibold text-white">Trusted by 50K+ Remote Workers</h3>
+                <p className="text-sm text-white mt-2">Real users. Real results. Zero fluff.</p>
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 md:px-8 bg-blue-600 text-white relative z-10">
+      <section className="py-20 px-4 md:px-8 bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Build Your Secure Remote Workspace?

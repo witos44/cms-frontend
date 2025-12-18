@@ -1,207 +1,146 @@
-// components/PostEditor.tsx
 'use client';
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
-import * as ToolbarRadix from '@radix-ui/react-toolbar';
+import Underline from '@tiptap/extension-underline';
+import * as Toolbar from '@radix-ui/react-toolbar';
 import {
   FontBoldIcon,
   FontItalicIcon,
   UnderlineIcon,
   StrikethroughIcon,
-  CodeIcon,
-  QuoteIcon,
   ListBulletIcon,
-  Link1Icon,   // ✅ Gunakan Link1Icon, bukan LinkIcon
+  Link1Icon,
   ImageIcon,
 } from '@radix-ui/react-icons';
-import { ListOrdered } from "lucide-react";
+import { ListOrdered } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { createAuthClient } from '@/lib/supabase/auth-client';
+import { cn } from '@/lib/utils';
 
-type PostEditorProps = {
+type Props = {
   content: string;
-  onChange: (content: string) => void;
+  onChange: (html: string) => void;
 };
 
-export function PostEditor({ content, onChange }: PostEditorProps) {
+export function PostEditor({ content, onChange }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const isReadyRef = useRef(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: { levels: [1, 2, 3, 4, 5] },
-        codeBlock: { defaultLanguage: null },
+        heading: { levels: [1, 2, 3, 4, 5] as const },
       }),
+      Underline,
       Link.configure({ openOnClick: false }),
-      Image.configure({ inline: true }),
+      Image.configure({
+        inline: false,
+        allowBase64: false,
+      }),
     ],
-    content,
+    content: '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
+      if (!isReadyRef.current) return;
       onChange(editor.getHTML());
     },
   });
 
+  /* ===== LOAD CONTENT SAAT RE-EDIT (TIDAK RESET IMAGE) ===== */
+  useEffect(() => {
+    if (!editor) return;
+    if (!content) return;
+    if (isReadyRef.current) return;
+
+    editor.commands.setContent(content);
+    isReadyRef.current = true;
+  }, [editor, content]);
+
   if (!editor) return null;
 
+  /* ===== IMAGE UPLOAD ===== */
+  const uploadImage = async (file: File) => {
+    const supabase = createAuthClient();
+    const fileName = `editor-${Date.now()}-${file.name}`;
+
+    const { error } = await supabase.storage
+      .from('post-images')
+      .upload(fileName, file);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from('post-images')
+      .getPublicUrl(fileName);
+
+    editor.chain().focus().setImage({ src: data.publicUrl }).run();
+  };
+
+  const btn = (active = false) =>
+    cn(
+      'h-8 px-2 rounded-md flex items-center justify-center',
+      'hover:bg-accent hover:text-accent-foreground',
+      active && 'bg-accent text-accent-foreground'
+    );
+
   return (
-    <div className="border rounded-lg shadow-sm flex flex-col h-[600px]">
-      {/* Toolbar Radix UI */}
-      <ToolbarRadix.Root
-        className="flex flex-wrap items-center gap-0.5 p-1 border-b bg-background sticky top-15 z-10"
-        aria-label="Editor toolbar"
-      >
-        {/* Heading */}
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}
-          data-state={editor.isActive('heading', { level: 1 }) ? 'on' : 'off'}
-          aria-label="Heading 1"
-        >
-          H1
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}
-          data-state={editor.isActive('heading', { level: 2 }) ? 'on' : 'off'}
-          aria-label="Heading 2"
-        >
-          H2
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().setHeading({ level: 3 }).run()}
-          data-state={editor.isActive('heading', { level: 3 }) ? 'on' : 'off'}
-          aria-label="Heading 3"
-        >
-          H3
-        </ToolbarRadix.Button>
+    <div className="border rounded-lg overflow-hidden bg-background">
+      <Toolbar.Root className="flex flex-wrap gap-1 p-2 border-b bg-muted/40">
+        <button className={btn(editor.isActive('heading', { level: 1 }))} onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}>H1</button>
+        <button className={btn(editor.isActive('heading', { level: 2 }))} onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}>H2</button>
+        <button className={btn(editor.isActive('heading', { level: 3 }))} onClick={() => editor.chain().focus().setHeading({ level: 3 }).run()}>H3</button>
 
-        <ToolbarRadix.Separator className="w-px bg-border mx-1 h-6" />
+        <div className="w-px h-6 bg-border mx-1" />
 
-        {/* Format */}
-        <ToolbarRadix.Button
-          className="p-1.5 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          data-state={editor.isActive('bold') ? 'on' : 'off'}
-          aria-label="Bold"
-        >
-          <FontBoldIcon />
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-1.5 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          data-state={editor.isActive('italic') ? 'on' : 'off'}
-          aria-label="Italic"
-        >
-          <FontItalicIcon />
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-1.5 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          data-state={editor.isActive('underline') ? 'on' : 'off'}
-          aria-label="Underline"
-        >
-          <UnderlineIcon />
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-1.5 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          data-state={editor.isActive('strike') ? 'on' : 'off'}
-          aria-label="Strikethrough"
-        >
-          <StrikethroughIcon />
-        </ToolbarRadix.Button>
+        <button className={btn(editor.isActive('bold'))} onClick={() => editor.chain().focus().toggleBold().run()}><FontBoldIcon /></button>
+        <button className={btn(editor.isActive('italic'))} onClick={() => editor.chain().focus().toggleItalic().run()}><FontItalicIcon /></button>
+        <button className={btn(editor.isActive('underline'))} onClick={() => editor.chain().focus().toggleUnderline().run()}><UnderlineIcon /></button>
+        <button className={btn(editor.isActive('strike'))} onClick={() => editor.chain().focus().toggleStrike().run()}><StrikethroughIcon /></button>
 
-        <ToolbarRadix.Separator className="w-px bg-border mx-1 h-6" />
+        <div className="w-px h-6 bg-border mx-1" />
 
-        {/* Blocks */}
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          data-state={editor.isActive('paragraph') ? 'on' : 'off'}
-          aria-label="Paragraph"
-        >
-          P
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          data-state={editor.isActive('blockquote') ? 'on' : 'off'}
-          aria-label="Blockquote"
-        >
-          <QuoteIcon />
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          data-state={editor.isActive('codeBlock') ? 'on' : 'off'}
-          aria-label="Code block"
-        >
-          <CodeIcon />
-        </ToolbarRadix.Button>
+        <button className={btn(editor.isActive('bulletList'))} onClick={() => editor.chain().focus().toggleBulletList().run()}><ListBulletIcon /></button>
+        <button className={btn(editor.isActive('orderedList'))} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered size={16} /></button>
 
-        <ToolbarRadix.Separator className="w-px bg-border mx-1 h-6" />
+        <div className="w-px h-6 bg-border mx-1" />
 
-        {/* Lists */}
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          data-state={editor.isActive('bulletList') ? 'on' : 'off'}
-          aria-label="Bullet list"
-        >
-          <ListBulletIcon />
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent data-[state=on]:bg-accent outline-none"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          data-state={editor.isActive('orderedList') ? 'on' : 'off'}
-          aria-label="Ordered list"
-        >
-          <ListOrdered />
-        </ToolbarRadix.Button>
-
-        <ToolbarRadix.Separator className="w-px bg-border mx-1 h-6" />
-
-        {/* Media */}
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent outline-none"
+        <button
+          className={btn()}
           onClick={() => {
-            const url = prompt('Enter URL:');
+            const url = prompt('URL');
             if (url) editor.chain().focus().setLink({ href: url }).run();
           }}
-          aria-label="Link"
         >
-          <Link1Icon /> {/* ✅ Diperbaiki */}
-        </ToolbarRadix.Button>
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent outline-none"
-          onClick={() => {
-            const src = prompt('Enter image URL:');
-            if (src) editor.chain().focus().setImage({ src }).run();
-          }}
-          aria-label="Image"
-        >
+          <Link1Icon />
+        </button>
+
+        <button className={btn()} onClick={() => fileInputRef.current?.click()}>
           <ImageIcon />
-        </ToolbarRadix.Button>
+        </button>
 
-        <ToolbarRadix.Separator className="w-px bg-border mx-1 h-6" />
-
-        <ToolbarRadix.Button
-          className="p-2 rounded-sm hover:bg-accent outline-none"
-          onClick={() => editor.chain().focus().unsetAllMarks().run()}
-          aria-label="Clear formatting"
-        >
+        <button className={btn()} onClick={() => editor.chain().focus().unsetAllMarks().run()}>
           ✕
-        </ToolbarRadix.Button>
-      </ToolbarRadix.Root>
+        </button>
+      </Toolbar.Root>
 
-      {/* Editor Content */}
-      <div className="flex-1 overflow-auto">
-        <EditorContent
-          editor={editor}
-          className="p-4 min-h-full prose prose-sm dark:prose-invert"
-        />
-      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(e) => e.target.files && uploadImage(e.target.files[0])}
+      />
+
+      <EditorContent
+        editor={editor}
+        className="p-4 min-h-[400px] prose prose-sm max-w-none dark:prose-invert"
+      />
     </div>
   );
 }

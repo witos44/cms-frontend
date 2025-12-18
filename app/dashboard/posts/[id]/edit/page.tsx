@@ -16,6 +16,13 @@ import { toast } from 'sonner';
 import { createAuthClient } from '@/lib/supabase/auth-client';
 import { PostEditor } from '@/components/PostEditor';
 
+/* ===== HELPER ===== */
+function extractImagesFromHTML(html: string): string[] {
+  if (!html) return [];
+  const matches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)];
+  return matches.map(m => m[1]);
+}
+
 export default function EditPostPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -29,14 +36,16 @@ export default function EditPostPage() {
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
+  /* ================= FETCH POST ================= */
   useEffect(() => {
     if (!id) return;
 
     const fetchPost = async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('title, slug, content, category')
+        .select('title, slug, content, category, cover_image')
         .eq('id', id)
         .single();
 
@@ -49,14 +58,38 @@ export default function EditPostPage() {
       setSlug(data.slug ?? '');
       setContent(data.content ?? '');
       setCategory(data.category ?? '');
+      setCoverImage(data.cover_image ?? null);
       setLoading(false);
     };
 
     fetchPost();
   }, [id, supabase]);
 
+  /* ================= COVER UPLOAD ================= */
+  const handleCoverUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('postId', id);
+
+    const res = await fetch('/api/admin/upload-cover', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      toast.error('Upload cover image failed');
+      return;
+    }
+
+    const data = await res.json();
+    setCoverImage(data.url);
+  };
+
+  /* ================= SAVE DRAFT (FIXED) ================= */
   const handleSave = async () => {
     setSaving(true);
+
+    const images = extractImagesFromHTML(content);
 
     const { error } = await supabase
       .from('posts')
@@ -64,7 +97,9 @@ export default function EditPostPage() {
         title,
         slug,
         content,
-        category, // ✅ FIX: category ikut update
+        category,
+        cover_image: coverImage,
+        images, // ✅ FIX
       })
       .eq('id', id);
 
@@ -79,6 +114,7 @@ export default function EditPostPage() {
     router.push('/dashboard/posts');
   };
 
+  /* ================= PUBLISH ================= */
   const handlePublish = async () => {
     if (!category) {
       toast.error('Please select a category');
@@ -90,10 +126,7 @@ export default function EditPostPage() {
     const res = await fetch('/api/admin/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id,       // ✅ FIX: pakai `id`, BUKAN postId
-        category, // ✅ dikirim ke API
-      }),
+      body: JSON.stringify({ id, category }),
     });
 
     setPublishing(false);
@@ -108,16 +141,23 @@ export default function EditPostPage() {
     router.push('/dashboard/posts');
   };
 
-  if (loading) {
-    return <div className="p-6">Loading...</div>;
-  }
+  if (loading) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 max-w-5xl">
       <h1 className="text-2xl font-bold">Edit Post</h1>
 
-      <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-      <Input value={slug} onChange={(e) => setSlug(e.target.value)} />
+      <Input
+        placeholder="Post title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+
+      <Input
+        placeholder="Slug"
+        value={slug}
+        onChange={(e) => setSlug(e.target.value)}
+      />
 
       <Select value={category} onValueChange={setCategory}>
         <SelectTrigger>
@@ -131,6 +171,28 @@ export default function EditPostPage() {
           <SelectItem value="reviews">Reviews</SelectItem>
         </SelectContent>
       </Select>
+
+      {/* ===== COVER IMAGE ===== */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Cover Image</label>
+
+        {coverImage && (
+          <img
+            src={coverImage}
+            alt="Cover"
+            className="w-full h-64 object-cover rounded-md border"
+          />
+        )}
+
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleCoverUpload(file);
+          }}
+        />
+      </div>
 
       <PostEditor content={content} onChange={setContent} />
 

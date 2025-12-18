@@ -28,7 +28,7 @@ export default async function PostDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-muted/40 py-10">
+    <div className="min-h-screen bg-muted/40 py-12">
       <Card className="max-w-3xl mx-auto">
         <CardContent className="p-8 space-y-6">
           {/* Category + Date */}
@@ -44,19 +44,24 @@ export default async function PostDetailPage({ params }: Props) {
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight leading-tight">
             {post.title}
           </h1>
 
           <Separator />
 
           {/* Content */}
-          <div
+          <article
             className="
-              post-content
-              space-y-4
-              text-sm
-              leading-relaxed
+              prose
+              prose-neutral
+              max-w-none
+              prose-img:rounded-lg
+              prose-img:mx-auto
+              prose-img:my-6
+              prose-a:text-primary
+              prose-a:no-underline
+              hover:prose-a:underline
             "
             dangerouslySetInnerHTML={{ __html: post.content }}
           />

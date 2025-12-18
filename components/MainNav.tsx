@@ -202,7 +202,7 @@ export default function MainNav() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-white overflow-y-auto pt-20 pb-8 px-4">
+        <div className="md:hidden fixed inset-0 z-50 bg-gray-200 overflow-y-auto pt-20 pb-8 px-4">
           <div className="space-y-6">
             {/* Job Board CTA */}
             <div className="mb-6">

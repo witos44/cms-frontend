@@ -146,6 +146,19 @@
   text-decoration: underline;
 }
 
+.editor-image {
+  display: block;
+  max-width: 100%;
+  margin: 1rem auto;
+}
+
+.editor-image + em {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+}
+
 
 @layer base {
   * {
