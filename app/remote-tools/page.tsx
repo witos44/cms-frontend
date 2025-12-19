@@ -1,4 +1,4 @@
-// app/remote-jobs/page.tsx
+// app/remote-tools/page.tsx
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-export default async function VpnPage() {
+export default async function RemoteToolsPage() {
   const supabase = await createClient();
 
   const { data: posts, error } = await supabase
@@ -34,9 +34,9 @@ export default async function VpnPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Remote Job Boards</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Best Remote Tools</h1>
         <p className="text-muted-foreground max-w-2xl">
-          Find the best platforms to land your next remote job.
+          Find the best and fit with your needs to land your next remote job.
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export default async function VpnPage() {
                   </Link>
                 </CardTitle>
 
-                <Badge variant="secondary">VPN</Badge>
+                <Badge variant="secondary">Remote Tools</Badge>
               </CardHeader>
 
               <CardContent className="flex justify-end">

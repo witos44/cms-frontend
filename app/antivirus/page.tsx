@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-export default async function VpnPage() {
+export default async function AntivirusPage() {
   const supabase = await createClient();
 
   const { data: posts, error } = await supabase
@@ -34,10 +34,10 @@ export default async function VpnPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Best VPN Providers</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Best Antivirus</h1>
         <p className="text-muted-foreground max-w-2xl">
           Reviewed, tested, and compared by our security team to help you choose
-          the safest VPN.
+          the best antivirus.
         </p>
       </div>
 

@@ -34,10 +34,10 @@ export default async function SecureEmailPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Best VPN Providers</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Secure Email Providers</h1>
         <p className="text-muted-foreground max-w-2xl">
           Reviewed, tested, and compared by our security team to help you choose
-          the safest VPN.
+          the safest email provider.
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export default async function SecureEmailPage() {
                   </Link>
                 </CardTitle>
 
-                <Badge variant="secondary">VPN</Badge>
+                <Badge variant="secondary">Secure Email</Badge>
               </CardHeader>
 
               <CardContent className="flex justify-end">

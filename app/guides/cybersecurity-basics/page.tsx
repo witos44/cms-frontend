@@ -34,9 +34,9 @@ export default async function CybersecurityBasicsPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Remote Job Boards</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Cybersecurity Basics</h1>
         <p className="text-muted-foreground max-w-2xl">
-          Find the best platforms to land your next remote job.
+          Learn the fundamentals of cybersecurity to protect yourself online.
         </p>
       </div>
 

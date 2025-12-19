@@ -34,10 +34,10 @@ export default async function PasswordManagersPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Best VPN Providers</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Securest Password Managers</h1>
         <p className="text-muted-foreground max-w-2xl">
           Reviewed, tested, and compared by our security team to help you choose
-          the safest VPN.
+          the safest password manager.
         </p>
       </div>
 

@@ -34,9 +34,9 @@ export default async function PrivacyPage() {
     <div className="container mx-auto py-12 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Remote Job Boards</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Privacy Guides</h1>
         <p className="text-muted-foreground max-w-2xl">
-          Find the best platforms to land your next remote job.
+          Learn how to protect your privacy online.
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export default async function PrivacyPage() {
                   </Link>
                 </CardTitle>
 
-                <Badge variant="secondary">VPN</Badge>
+                <Badge variant="secondary">Privacy</Badge>
               </CardHeader>
 
               <CardContent className="flex justify-end">
