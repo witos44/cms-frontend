@@ -1,13 +1,23 @@
 // lib/supabase/server.ts
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { headers } from 'next/headers';
 
 export async function createClient() {
   const cookieStore = await cookies();
-  const isProduction = process.env.NODE_ENV === 'production';
-  
-  // ✅ Ambil domain dari request (hindari hardcode)
-  const domain = isProduction ? '.vercel.app' : undefined;
+  const headersList = await headers();
+  const host = headersList.get('host'); // e.g., "nsecure.store" or "nsecure.vercel.app"
+
+  let domain = '';
+  if (host?.endsWith('vercel.app')) {
+    domain = '.vercel.app';
+  } else if (host && host !== 'localhost:3000') {
+    // Remove port if present (e.g., "nsecure.store:3000" → "nsecure.store")
+    const cleanHost = host.split(':')[0];
+    if (cleanHost.includes('.')) {
+      domain = `.${cleanHost}`;
+    }
+  }
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,8 +32,8 @@ export async function createClient() {
             name,
             value,
             ...options,
-            domain, // ✅ pastikan cookie berlaku di seluruh subdomain Vercel
-            secure: isProduction,
+            ...(domain ? { domain } : {}),
+            secure: host !== 'localhost:3000',
             sameSite: 'lax',
             path: '/',
           });
@@ -33,8 +43,8 @@ export async function createClient() {
             name,
             value: '',
             ...options,
-            domain,
-            secure: isProduction,
+            ...(domain ? { domain } : {}),
+            secure: host !== 'localhost:3000',
             sameSite: 'lax',
             path: '/',
           });
