@@ -18,7 +18,8 @@ export default function MainNav() {
   if (!mounted) return null;
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
+    <nav className="fixed top-0 z-50 w-full border-b bg-white md:bg-white/95 md:backdrop-blur md:supports-backdrop-filter:bg-white/60">
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
