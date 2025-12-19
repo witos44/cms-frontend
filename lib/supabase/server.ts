@@ -5,6 +5,9 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 export async function createClient() {
   const cookieStore = await cookies();
   const isProduction = process.env.NODE_ENV === 'production';
+  
+  // ✅ Ambil domain dari request (hindari hardcode)
+  const domain = isProduction ? '.vercel.app' : undefined;
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,8 +22,10 @@ export async function createClient() {
             name,
             value,
             ...options,
-            secure: isProduction ? true : false, // ✅ HTTPS di Vercel
+            domain, // ✅ pastikan cookie berlaku di seluruh subdomain Vercel
+            secure: isProduction,
             sameSite: 'lax',
+            path: '/',
           });
         },
         remove(name: string, options: CookieOptions) {
@@ -28,8 +33,10 @@ export async function createClient() {
             name,
             value: '',
             ...options,
-            secure: isProduction ? true : false, // ✅
+            domain,
+            secure: isProduction,
             sameSite: 'lax',
+            path: '/',
           });
         },
       },
