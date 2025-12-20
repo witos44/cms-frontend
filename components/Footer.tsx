@@ -15,7 +15,7 @@ export default function Footer() {
 
         {/* Brand - TETAP SAMA */}
         <div>
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center bg-linear-to-r from-blue-600 to-emerald-600">
             <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
           </Link>
           <p className="text-sm text-gray-600 mt-2">

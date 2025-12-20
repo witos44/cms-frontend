@@ -19,11 +19,10 @@ export default function MainNav() {
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b bg-white md:bg-white/95 md:backdrop-blur md:supports-backdrop-filter:bg-white/60">
-
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex bg-linear-to-r from-blue-600 to-emerald-600 items-center gap-2">
           <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
-          <span className="hidden text-sm text-gray-600 md:inline">
+          <span className="hidden text-sm text-white md:inline">
             Security × Remote Work
           </span>
         </Link>
@@ -228,131 +227,134 @@ export default function MainNav() {
               </Button>
             </div>
 
-            <div className="p-4 pt-6 space-y-6">
-              {/* Job Board CTA */}
-              <div className="mb-6">
-                <Button
-                  asChild
-                  className="w-full bg-linear-to-r from-blue-600 to-emerald-600"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Link href="/job-board" className="flex items-center justify-center gap-2">
-                    <Search className="h-4 w-4" />
-                    Browse Job Board
-                    <Badge className="ml-2">42 New</Badge>
-                  </Link>
-                </Button>
-              </div>
-
-              <NavMobileGroup title="Security Tools">
-                <MenuItem href="/vpn" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Best VPNs
-                </MenuItem>
-                <MenuItem href="/password-managers" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Password Managers
-                </MenuItem>
-                <MenuItem href="/antivirus" onClose={() => setMobileMenuOpen(false)}>
-                  Antivirus
-                </MenuItem>
-                <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
-                  <p className="text-xs text-emerald-600 mb-1 font-medium">For Remote Workers:</p>
-                  <MenuItem href="/security/client-data" onClose={() => setMobileMenuOpen(false)} featured>
-                    Secure Client Data
-                  </MenuItem>
-                  <MenuItem href="/public-wifi-security" onClose={() => setMobileMenuOpen(false)} featured>
-                    Public Wi-Fi Safety
-                  </MenuItem>
+            {/* Scrollable content area */}
+            <div className="p-4 pt-2 pb-6 overflow-y-auto max-h-[calc(100vh-60px)]">
+              <div className="space-y-6">
+                {/* Job Board CTA */}
+                <div className="mb-6">
+                  <Button
+                    asChild
+                    className="w-full bg-linear-to-r from-blue-600 to-emerald-600"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Link href="/job-board" className="flex items-center justify-center gap-2">
+                      <Search className="h-4 w-4" />
+                      Browse Job Board
+                      <Badge className="ml-2">42 New</Badge>
+                    </Link>
+                  </Button>
                 </div>
-              </NavMobileGroup>
 
-              <NavMobileGroup title="Work From Anywhere">
-                <MenuItem href="/remote-jobs" onClose={() => setMobileMenuOpen(false)} badge="42 New">
-                  Remote Job Boards
-                </MenuItem>
-                <MenuItem href="/remote-tools" onClose={() => setMobileMenuOpen(false)}>
-                  Team Collaboration Tools
-                </MenuItem>
-                <MenuItem href="/best-laptops" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Best Laptops for Remote Work
-                </MenuItem>
-                <MenuItem href="/best-headsets" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Best Headsets & Webcams
-                </MenuItem>
-                <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
-                  <p className="text-xs text-emerald-600 mb-1 font-medium">Secure Setup:</p>
-                  <MenuItem href="/home-office-setup" onClose={() => setMobileMenuOpen(false)} featured>
-                    Secure Home Office Guide
+                <NavMobileGroup title="Security Tools">
+                  <MenuItem href="/vpn" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Best VPNs
                   </MenuItem>
+                  <MenuItem href="/password-managers" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Password Managers
+                  </MenuItem>
+                  <MenuItem href="/antivirus" onClose={() => setMobileMenuOpen(false)}>
+                    Antivirus
+                  </MenuItem>
+                  <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
+                    <p className="text-xs text-emerald-600 mb-1 font-medium">For Remote Workers:</p>
+                    <MenuItem href="/security/client-data" onClose={() => setMobileMenuOpen(false)} featured>
+                      Secure Client Data
+                    </MenuItem>
+                    <MenuItem href="/public-wifi-security" onClose={() => setMobileMenuOpen(false)} featured>
+                      Public Wi-Fi Safety
+                    </MenuItem>
+                  </div>
+                </NavMobileGroup>
+
+                <NavMobileGroup title="Work From Anywhere">
+                  <MenuItem href="/remote-jobs" onClose={() => setMobileMenuOpen(false)} badge="42 New">
+                    Remote Job Boards
+                  </MenuItem>
+                  <MenuItem href="/remote-tools" onClose={() => setMobileMenuOpen(false)}>
+                    Team Collaboration Tools
+                  </MenuItem>
+                  <MenuItem href="/best-laptops" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Best Laptops for Remote Work
+                  </MenuItem>
+                  <MenuItem href="/best-headsets" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Best Headsets & Webcams
+                  </MenuItem>
+                  <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
+                    <p className="text-xs text-emerald-600 mb-1 font-medium">Secure Setup:</p>
+                    <MenuItem href="/home-office-setup" onClose={() => setMobileMenuOpen(false)} featured>
+                      Secure Home Office Guide
+                    </MenuItem>
+                  </div>
+                </NavMobileGroup>
+
+                <NavMobileGroup title="Deals">
+                  <div className="mb-3">
+                    <p className="text-xs text-amber-600 font-medium mb-2">🔥 Active Deals</p>
+                    <DealItem 
+                      label="NordVPN - 63% OFF" 
+                      expires="2 days"
+                      href="/deals/nordvpn"
+                      onClose={() => setMobileMenuOpen(false)}
+                      mobile
+                    />
+                    <DealItem 
+                      label="Dashlane - Free 6mo" 
+                      expires="1 week"
+                      href="/deals/dashlane"
+                      onClose={() => setMobileMenuOpen(false)}
+                      mobile
+                    />
+                  </div>
+                  <MenuItem href="/deals/vpn" onClose={() => setMobileMenuOpen(false)}>
+                    VPN Deals
+                  </MenuItem>
+                  <MenuItem href="/deals/software" onClose={() => setMobileMenuOpen(false)}>
+                    Software Discounts
+                  </MenuItem>
+                  <MenuItem href="/deals/gear" onClose={() => setMobileMenuOpen(false)}>
+                    Remote Gear Deals
+                  </MenuItem>
+                </NavMobileGroup>
+
+                <NavMobileGroup title="Guides">
+                  <div className="mb-3">
+                    <p className="text-xs text-blue-600 font-medium mb-1">Security Guides</p>
+                    <MenuItem href="/guides/cybersecurity-basics" onClose={() => setMobileMenuOpen(false)}>
+                      Cybersecurity Basics
+                    </MenuItem>
+                    <MenuItem href="/guides/secure-setup" onClose={() => setMobileMenuOpen(false)} featured>
+                      Secure Remote Workspace
+                    </MenuItem>
+                  </div>
+                  <div>
+                    <p className="text-xs text-emerald-600 font-medium mb-1">Remote Work Guides</p>
+                    <MenuItem href="/guides/remote-work-starter" onClose={() => setMobileMenuOpen(false)} featured>
+                      Remote Work Starter Kit
+                    </MenuItem>
+                    <MenuItem href="/guides/privacy" onClose={() => setMobileMenuOpen(false)}>
+                      Privacy Essentials
+                    </MenuItem>
+                  </div>
+                </NavMobileGroup>
+
+                <NavMobileGroup title="Reviews">
+                  <MenuItem href="/reviews/software" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Software Reviews
+                  </MenuItem>
+                  <MenuItem href="/reviews/hardware" onClose={() => setMobileMenuOpen(false)} affiliate>
+                    Hardware Reviews
+                  </MenuItem>
+                  <MenuItem href="/reviews/platforms" onClose={() => setMobileMenuOpen(false)}>
+                    Remote Job Platforms
+                  </MenuItem>
+                </NavMobileGroup>
+
+                {/* Disclosure */}
+                <div className="pt-6 border-t">
+                  <p className="text-xs text-gray-500">
+                    💡 <strong>Note:</strong> Some links are affiliate links. We earn commission at no extra cost to you. We only recommend tools we use and trust.
+                  </p>
                 </div>
-              </NavMobileGroup>
-
-              <NavMobileGroup title="Deals">
-                <div className="mb-3">
-                  <p className="text-xs text-amber-600 font-medium mb-2">🔥 Active Deals</p>
-                  <DealItem 
-                    label="NordVPN - 63% OFF" 
-                    expires="2 days"
-                    href="/deals/nordvpn"
-                    onClose={() => setMobileMenuOpen(false)}
-                    mobile
-                  />
-                  <DealItem 
-                    label="Dashlane - Free 6mo" 
-                    expires="1 week"
-                    href="/deals/dashlane"
-                    onClose={() => setMobileMenuOpen(false)}
-                    mobile
-                  />
-                </div>
-                <MenuItem href="/deals/vpn" onClose={() => setMobileMenuOpen(false)}>
-                  VPN Deals
-                </MenuItem>
-                <MenuItem href="/deals/software" onClose={() => setMobileMenuOpen(false)}>
-                  Software Discounts
-                </MenuItem>
-                <MenuItem href="/deals/gear" onClose={() => setMobileMenuOpen(false)}>
-                  Remote Gear Deals
-                </MenuItem>
-              </NavMobileGroup>
-
-              <NavMobileGroup title="Guides">
-                <div className="mb-3">
-                  <p className="text-xs text-blue-600 font-medium mb-1">Security Guides</p>
-                  <MenuItem href="/guides/cybersecurity-basics" onClose={() => setMobileMenuOpen(false)}>
-                    Cybersecurity Basics
-                  </MenuItem>
-                  <MenuItem href="/guides/secure-setup" onClose={() => setMobileMenuOpen(false)} featured>
-                    Secure Remote Workspace
-                  </MenuItem>
-                </div>
-                <div>
-                  <p className="text-xs text-emerald-600 font-medium mb-1">Remote Work Guides</p>
-                  <MenuItem href="/guides/remote-work-starter" onClose={() => setMobileMenuOpen(false)} featured>
-                    Remote Work Starter Kit
-                  </MenuItem>
-                  <MenuItem href="/guides/privacy" onClose={() => setMobileMenuOpen(false)}>
-                    Privacy Essentials
-                  </MenuItem>
-                </div>
-              </NavMobileGroup>
-
-              <NavMobileGroup title="Reviews">
-                <MenuItem href="/reviews/software" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Software Reviews
-                </MenuItem>
-                <MenuItem href="/reviews/hardware" onClose={() => setMobileMenuOpen(false)} affiliate>
-                  Hardware Reviews
-                </MenuItem>
-                <MenuItem href="/reviews/platforms" onClose={() => setMobileMenuOpen(false)}>
-                  Remote Job Platforms
-                </MenuItem>
-              </NavMobileGroup>
-
-              {/* Disclosure */}
-              <div className="pt-6 border-t">
-                <p className="text-xs text-gray-500">
-                  💡 <strong>Note:</strong> Some links are affiliate links. We earn commission at no extra cost to you. We only recommend tools we use and trust.
-                </p>
               </div>
             </div>
           </div>
