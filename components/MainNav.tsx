@@ -156,12 +156,63 @@ export default function MainNav() {
       </div>
 
       {/* MOBILE DRAWER */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 md:hidden">
-          <div className="absolute left-0 top-0 h-full w-80 bg-white p-4 overflow-y-auto">
+      <div
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
+          mobileMenuOpen
+            ? 'opacity-100 visible'
+            : 'opacity-0 invisible delay-200'
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+
+        {/* Drawer Content */}
+        <div
+          className={`absolute left-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-xl transition-transform duration-300 ease-out ${
+            mobileMenuOpen
+              ? 'translate-x-0'
+              : '-translate-x-full'
+          }`}
+        >
+          {/* Header with close button */}
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4">
+            <Link
+              href="/"
+              className="flex items-center gap-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <img src="/nsecure.png" alt="nsecure" className="h-7 w-auto" />
+              <span className="text-sm text-gray-600">Menu</span>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(false)}
+              className="h-9 w-9"
+            >
+              <X size={20} />
+            </Button>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="h-[calc(100%-4rem)] overflow-y-auto p-4">
             <NavMobileGroup title="Guides">
               <MenuItem href="/guides/security-basics">
                 Security Basics
+              </MenuItem>
+              <MenuItem href="/guides/privacy-essentials">
+                Privacy Essentials
+              </MenuItem>
+              <MenuItem href="/guides/secure-workspace">
+                Secure Workspace
+              </MenuItem>
+              <MenuItem href="/guides/digital-footprint">
+                Digital Footprint
               </MenuItem>
               <MenuItem href="/guides/remote-starter-kit" featured>
                 Remote Starter Kit
@@ -169,18 +220,41 @@ export default function MainNav() {
               <MenuItem href="/guides/productivity">
                 Productivity
               </MenuItem>
+              <MenuItem href="/guides/remote-interview">
+                Remote Interview
+              </MenuItem>
+              <MenuItem href="/guides/digital-nomad">
+                Digital Nomad
+              </MenuItem>
             </NavMobileGroup>
 
             <NavMobileGroup title="Deals">
-              <MenuItem href="/deals/vpn-deals">
-                VPN Deals
-              </MenuItem>
-              <MenuItem href="/deals/software-deals">
-                Software Deals
-              </MenuItem>
-              <MenuItem href="/deals/gear-deals">
-                Gear Deals
-              </MenuItem>
+              <DealItem
+                href="/deals/nordvpn"
+                label="NordVPN - 63% OFF"
+                expires="2 days"
+              />
+              <DealItem
+                href="/deals/dashlane"
+                label="Dashlane - Free 6 Months"
+                expires="1 week"
+              />
+              <DealItem
+                href="/deals/notion"
+                label="Notion - 40% OFF"
+                expires="5 days"
+              />
+              <div className="mt-2 pt-3 border-t">
+                <MenuItem href="/deals/vpn-deals">
+                  VPN Deals
+                </MenuItem>
+                <MenuItem href="/deals/software-deals">
+                  Software Deals
+                </MenuItem>
+                <MenuItem href="/deals/gear-deals">
+                  Gear Deals
+                </MenuItem>
+              </div>
             </NavMobileGroup>
 
             <NavMobileGroup title="Remote Jobs">
@@ -188,7 +262,11 @@ export default function MainNav() {
                 href="/remote-jobs/job-boards"
                 featured
               >
-                Job Board
+                <div className="flex items-center gap-2">
+                  <Search size={14} />
+                  Browse Job Board
+                  <Badge className="ml-auto">New</Badge>
+                </div>
               </MenuItem>
               <MenuItem href="/remote-jobs/tech-jobs">
                 Tech Jobs
@@ -196,10 +274,13 @@ export default function MainNav() {
               <MenuItem href="/remote-jobs/entry-level">
                 Entry Level
               </MenuItem>
+              <MenuItem href="/remote-jobs/freelance">
+                Freelance
+              </MenuItem>
             </NavMobileGroup>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
@@ -246,23 +327,23 @@ function NavMobileGroup({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mb-4">
+    <div className="mb-6">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-3 font-medium"
+        className="flex w-full items-center justify-between py-3 px-2 text-base font-semibold text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
       >
-        {title}
+        <span>{title}</span>
         <ChevronDown
-          size={16}
-          className={`transition-transform ${
+          size={18}
+          className={`transition-transform duration-200 ${
             open ? 'rotate-180' : ''
           }`}
         />
       </button>
 
       {open && (
-        <div className="ml-3 border-l pl-3 space-y-1">
+        <div className="ml-2 pl-2 border-l-2 border-gray-200 space-y-1">
           {children}
         </div>
       )}
@@ -282,10 +363,10 @@ function MenuItem({
   return (
     <Link
       href={href}
-      className={`block rounded-md px-3 py-2 text-sm transition ${
+      className={`block rounded-lg px-3 py-2.5 text-base transition-all ${
         featured
-          ? 'bg-emerald-100 text-emerald-800'
-          : 'hover:bg-gray-100'
+          ? 'bg-emerald-50 text-emerald-800 border border-emerald-100 hover:bg-emerald-100'
+          : 'text-gray-700 hover:bg-gray-100'
       }`}
     >
       {children}
@@ -305,12 +386,12 @@ function DealItem({
   return (
     <Link
       href={href}
-      className="flex items-center justify-between rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm hover:bg-amber-100"
+      className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-base hover:bg-amber-100 mb-2 transition-colors"
     >
       <span className="font-medium text-amber-800">
         {label}
       </span>
-      <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs text-amber-800">
+      <span className="rounded-full bg-amber-200 px-2.5 py-1 text-xs font-medium text-amber-800">
         {expires}
       </span>
     </Link>
