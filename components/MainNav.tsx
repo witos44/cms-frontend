@@ -1,408 +1,268 @@
-// components/MainNav.tsx
 'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Shield, Briefcase, Tag, BookOpen, Star, Search } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Menu,
+  X,
+  ChevronDown,
+  BookOpen,
+  Tag,
+  Briefcase,
+  Search,
+} from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+/* ===================== MAIN NAV ===================== */
 
 export default function MainNav() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b bg-white md:bg-white/95 md:backdrop-blur md:supports-backdrop-filter:bg-white/60">
+    <nav className="fixed top-0 z-50 w-full border-b bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex bg-linear-to-r from-blue-600 to-emerald-600 items-center gap-2">
-          <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
-          <span className="hidden text-sm text-white md:inline">
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/nsecure.png" alt="nsecure" className="h-8 w-auto" />
+          <span className="hidden md:inline text-sm text-gray-600">
             Security × Remote Work
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          {/* Security Tools */}
-          <NavDesktopItem title="Security Tools" icon={<Shield size={14} />}>
-            <div className="grid grid-cols-2 gap-4 p-4 w-[500px]">
-              <div>
-                <h4 className="font-medium text-sm mb-2 text-blue-600">Essential Protection</h4>
-                <MenuItem href="/vpn" affiliate badge="65%">Best VPNs</MenuItem>
-                <MenuItem href="/password-managers" affiliate badge="40%">Password Managers</MenuItem>
-                <MenuItem href="/antivirus">Antivirus Software</MenuItem>
-                <MenuItem href="/secure-email">Secure Email</MenuItem>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm mb-2 text-emerald-600">For Remote Workers</h4>
-                <MenuItem href="/security/client-data" featured>Secure Client Data</MenuItem>
-                <MenuItem href="/public-wifi-security" featured>Public Wi-Fi Safety</MenuItem>
-                <MenuItem href="/hardware-keys">2FA Hardware Keys</MenuItem>
-                <MenuItem href="/secure-cloud">Cloud Storage</MenuItem>
-              </div>
-            </div>
-            <div className="px-4 py-2 border-t text-xs text-gray-500">
-              💡 Essential for remote work security
-            </div>
-          </NavDesktopItem>
-
-          {/* Work From Anywhere */}
-          <NavDesktopItem title="Work From Anywhere" icon={<Briefcase size={14} />}>
-            <div className="grid grid-cols-2 gap-4 p-4 w-[500px]">
-              <div>
-                <h4 className="font-medium text-sm mb-2 text-blue-600">Find Opportunities</h4>
-                <MenuItem href="/remote-jobs" badge="42 New">
-                  <div className="flex items-center gap-2">
-                    <Search size={12} />
-                    Remote Job Boards
-                  </div>
-                </MenuItem>
-                <MenuItem href="/jobs/tech">Tech Remote Jobs</MenuItem>
-                <MenuItem href="/jobs/entry-level">Entry-Level Remote</MenuItem>
-                <MenuItem href="/freelance-platforms">Freelance Platforms</MenuItem>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm mb-2 text-emerald-600">Remote Setup</h4>
-                <MenuItem href="/remote-tools" featured>Team Collaboration</MenuItem>
-                <MenuItem href="/best-laptops" affiliate badge="5%">Best Laptops</MenuItem>
-                <MenuItem href="/best-headsets" affiliate badge="8%">Headsets & Webcams</MenuItem>
-                <MenuItem href="/home-office-setup" featured>Home Office Guide</MenuItem>
-              </div>
-            </div>
-          </NavDesktopItem>
-
-          {/* Deals */}
-          <NavDesktopItem title="Deals" icon={<Tag size={14} />}>
-            <div className="p-4 w-[350px]">
-              <div className="mb-4">
-                <h4 className="font-medium text-sm mb-3 text-amber-600">🔥 Hot Deals</h4>
-                <div className="space-y-2">
-                  <DealItem 
-                    label="NordVPN - 63% OFF" 
-                    expires="2 days"
-                    href="/deals/nordvpn"
-                  />
-                  <DealItem 
-                    label="Dashlane - Free 6 months" 
-                    expires="1 week"
-                    href="/deals/dashlane"
-                  />
-                  <DealItem 
-                    label="Notion - 40% OFF" 
-                    expires="5 days"
-                    href="/deals/notion"
-                  />
-                </div>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm mb-2">More Discounts</h4>
-                <MenuItem href="/deals/vpn">All VPN Deals</MenuItem>
-                <MenuItem href="/deals/software">Software Discounts</MenuItem>
-                <MenuItem href="/deals/gear">Remote Gear Deals</MenuItem>
-              </div>
-              <div className="mt-4 text-xs text-gray-500">
-                * Affiliate links - We earn commission
-              </div>
-            </div>
-          </NavDesktopItem>
-
-          {/* Guides */}
+        {/* DESKTOP */}
+        <div className="hidden md:flex items-center gap-6">
+          {/* GUIDES */}
           <NavDesktopItem title="Guides" icon={<BookOpen size={14} />}>
-            <div className="grid grid-cols-2 gap-4 p-4 w-[500px]">
+            <div className="grid grid-cols-2 gap-4 p-4 w-[480px]">
               <div>
-                <h4 className="font-medium text-sm mb-2 text-blue-600">Security Guides</h4>
-                <MenuItem href="/guides/cybersecurity-basics">Cybersecurity Basics</MenuItem>
-                <MenuItem href="/guides/privacy">Privacy Essentials</MenuItem>
-                <MenuItem href="/guides/secure-setup">Secure Workspace</MenuItem>
-                <MenuItem href="/guides/digital-footprint">Digital Footprint</MenuItem>
+                <h4 className="text-sm font-medium text-blue-600 mb-2">
+                  Security
+                </h4>
+                <MenuItem href="/guides/security-basics">
+                  Security Basics
+                </MenuItem>
+                <MenuItem href="/guides/privacy-essentials">
+                  Privacy Essentials
+                </MenuItem>
+                <MenuItem href="/guides/secure-workspace">
+                  Secure Workspace
+                </MenuItem>
+                <MenuItem href="/guides/digital-footprint">
+                  Digital Footprint
+                </MenuItem>
               </div>
+
               <div>
-                <h4 className="font-medium text-sm mb-2 text-emerald-600">Remote Work Guides</h4>
-                <MenuItem href="/guides/remote-work-starter" featured>Remote Starter Kit</MenuItem>
-                <MenuItem href="/guides/productivity">Productivity Tips</MenuItem>
-                <MenuItem href="/guides/remote-interview">Ace Remote Interviews</MenuItem>
-                <MenuItem href="/guides/digital-nomad">Digital Nomad Guide</MenuItem>
+                <h4 className="text-sm font-medium text-emerald-600 mb-2">
+                  Remote Work
+                </h4>
+                <MenuItem href="/guides/remote-starter-kit" featured>
+                  Remote Starter Kit
+                </MenuItem>
+                <MenuItem href="/guides/productivity">
+                  Productivity
+                </MenuItem>
+                <MenuItem href="/guides/remote-interview">
+                  Remote Interview
+                </MenuItem>
+                <MenuItem href="/guides/digital-nomad">
+                  Digital Nomad
+                </MenuItem>
               </div>
             </div>
           </NavDesktopItem>
 
-          {/* Reviews */}
-          <NavDesktopItem title="Reviews" icon={<Star size={14} />}>
-            <div className="p-4 w-[300px]">
-              <div className="mb-4">
-                <h4 className="font-medium text-sm mb-2">Top Picks</h4>
-                <MenuItem href="/reviews/software" affiliate>
-                  <div className="flex items-center justify-between">
-                    Software Reviews
-                    <Badge variant="outline" className="text-xs">20+</Badge>
-                  </div>
-                </MenuItem>
-                <MenuItem href="/reviews/hardware" affiliate>
-                  <div className="flex items-center justify-between">
-                    Hardware Reviews
-                    <Badge variant="outline" className="text-xs">15+</Badge>
-                  </div>
-                </MenuItem>
-                <MenuItem href="/reviews/platforms">
-                  <div className="flex items-center justify-between">
-                    Remote Platforms
-                    <Badge variant="outline" className="text-xs">12+</Badge>
-                  </div>
-                </MenuItem>
+          {/* DEALS */}
+          <NavDesktopItem title="Deals" icon={<Tag size={14} />}>
+            <div className="p-4 w-[360px]">
+              <h4 className="text-sm font-medium text-amber-600 mb-3">
+                🔥 Hot Deals
+              </h4>
+
+              <div className="space-y-2">
+                <DealItem
+                  href="/deals/nordvpn"
+                  label="NordVPN - 63% OFF"
+                  expires="2 days"
+                />
+                <DealItem
+                  href="/deals/dashlane"
+                  label="Dashlane - Free 6 Months"
+                  expires="1 week"
+                />
+                <DealItem
+                  href="/deals/notion"
+                  label="Notion - 40% OFF"
+                  expires="5 days"
+                />
               </div>
-              <div>
-                <h4 className="font-medium text-sm mb-2">Comparison Charts</h4>
-                <MenuItem href="/comparison/vpn">VPN Comparison</MenuItem>
-                <MenuItem href="/comparison/password-managers">Password Managers</MenuItem>
-                <MenuItem href="/comparison/laptops">Laptop Comparison</MenuItem>
+
+              <div className="mt-4 border-t pt-3 space-y-1">
+                <MenuItem href="/deals/vpn-deals">VPN Deals</MenuItem>
+                <MenuItem href="/deals/software-deals">
+                  Software Deals
+                </MenuItem>
+                <MenuItem href="/deals/gear-deals">Gear Deals</MenuItem>
               </div>
             </div>
           </NavDesktopItem>
 
-          {/* CTA Button */}
-          <Button
-            asChild
-            className="bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700"
+          {/* REMOTE JOBS */}
+          <NavDesktopItem
+            title="Remote Jobs"
+            icon={<Briefcase size={14} />}
           >
-            <Link href="/job-board" className="hidden lg:flex">
-              <Search className="mr-2 h-4 w-4" />
-              Job Board
-            </Link>
-          </Button>
+            <div className="p-4 w-[360px]">
+              <MenuItem
+                href="/remote-jobs/job-boards"
+                featured
+              >
+                <div className="flex items-center gap-2">
+                  <Search size={14} />
+                  Browse Job Board
+                  <Badge className="ml-auto">New</Badge>
+                </div>
+              </MenuItem>
+
+              <div className="mt-3 space-y-1">
+                <MenuItem href="/remote-jobs/tech-jobs">
+                  Tech Jobs
+                </MenuItem>
+                <MenuItem href="/remote-jobs/entry-level">
+                  Entry Level
+                </MenuItem>
+                <MenuItem href="/remote-jobs/freelance">
+                  Freelance
+                </MenuItem>
+              </div>
+            </div>
+          </NavDesktopItem>
         </div>
 
-        {/* Mobile Trigger */}
-        <div className="flex items-center gap-2">
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="hidden md:flex lg:hidden"
-          >
-            <Link href="/job-board">
-              <Search className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
-        </div>
+        {/* MOBILE TOGGLE */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X /> : <Menu />}
+        </Button>
       </div>
 
-      {/* Mobile Drawer with Slide Animation */}
+      {/* MOBILE DRAWER */}
       {mobileMenuOpen && (
-        <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
+        <div className="fixed inset-0 z-40 bg-black/50 md:hidden">
+          <div className="absolute left-0 top-0 h-full w-80 bg-white p-4 overflow-y-auto">
+            <NavMobileGroup title="Guides">
+              <MenuItem href="/guides/security-basics">
+                Security Basics
+              </MenuItem>
+              <MenuItem href="/guides/remote-starter-kit" featured>
+                Remote Starter Kit
+              </MenuItem>
+              <MenuItem href="/guides/productivity">
+                Productivity
+              </MenuItem>
+            </NavMobileGroup>
 
-          {/* Drawer */}
-          <div className="md:hidden fixed left-0 top-0 z-50 w-80 h-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
-            <div className="flex justify-between items-center px-4 py-3 border-b">
-              <Link href="/" className="flex items-center gap-2">
-                <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
-                <span className="text-sm text-gray-600">
-                  Security × Remote Work
-                </span>
-              </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(false)}
+            <NavMobileGroup title="Deals">
+              <MenuItem href="/deals/vpn-deals">
+                VPN Deals
+              </MenuItem>
+              <MenuItem href="/deals/software-deals">
+                Software Deals
+              </MenuItem>
+              <MenuItem href="/deals/gear-deals">
+                Gear Deals
+              </MenuItem>
+            </NavMobileGroup>
+
+            <NavMobileGroup title="Remote Jobs">
+              <MenuItem
+                href="/remote-jobs/job-boards"
+                featured
               >
-                <X size={24} />
-              </Button>
-            </div>
-
-            {/* Scrollable content area */}
-            <div className="p-4 pt-2 pb-6 overflow-y-auto max-h-[calc(100vh-60px)]">
-              <div className="space-y-6">
-                {/* Job Board CTA */}
-                <div className="mb-6">
-                  <Button
-                    asChild
-                    className="w-full bg-linear-to-r from-blue-600 to-emerald-600"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Link href="/job-board" className="flex items-center justify-center gap-2">
-                      <Search className="h-4 w-4" />
-                      Browse Job Board
-                      <Badge className="ml-2">42 New</Badge>
-                    </Link>
-                  </Button>
-                </div>
-
-                <NavMobileGroup title="Security Tools">
-                  <MenuItem href="/vpn" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Best VPNs
-                  </MenuItem>
-                  <MenuItem href="/password-managers" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Password Managers
-                  </MenuItem>
-                  <MenuItem href="/antivirus" onClose={() => setMobileMenuOpen(false)}>
-                    Antivirus
-                  </MenuItem>
-                  <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
-                    <p className="text-xs text-emerald-600 mb-1 font-medium">For Remote Workers:</p>
-                    <MenuItem href="/security/client-data" onClose={() => setMobileMenuOpen(false)} featured>
-                      Secure Client Data
-                    </MenuItem>
-                    <MenuItem href="/public-wifi-security" onClose={() => setMobileMenuOpen(false)} featured>
-                      Public Wi-Fi Safety
-                    </MenuItem>
-                  </div>
-                </NavMobileGroup>
-
-                <NavMobileGroup title="Work From Anywhere">
-                  <MenuItem href="/remote-jobs" onClose={() => setMobileMenuOpen(false)} badge="42 New">
-                    Remote Job Boards
-                  </MenuItem>
-                  <MenuItem href="/remote-tools" onClose={() => setMobileMenuOpen(false)}>
-                    Team Collaboration Tools
-                  </MenuItem>
-                  <MenuItem href="/best-laptops" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Best Laptops for Remote Work
-                  </MenuItem>
-                  <MenuItem href="/best-headsets" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Best Headsets & Webcams
-                  </MenuItem>
-                  <div className="ml-4 mt-2 pl-2 border-l-2 border-emerald-200">
-                    <p className="text-xs text-emerald-600 mb-1 font-medium">Secure Setup:</p>
-                    <MenuItem href="/home-office-setup" onClose={() => setMobileMenuOpen(false)} featured>
-                      Secure Home Office Guide
-                    </MenuItem>
-                  </div>
-                </NavMobileGroup>
-
-                <NavMobileGroup title="Deals">
-                  <div className="mb-3">
-                    <p className="text-xs text-amber-600 font-medium mb-2">🔥 Active Deals</p>
-                    <DealItem 
-                      label="NordVPN - 63% OFF" 
-                      expires="2 days"
-                      href="/deals/nordvpn"
-                      onClose={() => setMobileMenuOpen(false)}
-                      mobile
-                    />
-                    <DealItem 
-                      label="Dashlane - Free 6mo" 
-                      expires="1 week"
-                      href="/deals/dashlane"
-                      onClose={() => setMobileMenuOpen(false)}
-                      mobile
-                    />
-                  </div>
-                  <MenuItem href="/deals/vpn" onClose={() => setMobileMenuOpen(false)}>
-                    VPN Deals
-                  </MenuItem>
-                  <MenuItem href="/deals/software" onClose={() => setMobileMenuOpen(false)}>
-                    Software Discounts
-                  </MenuItem>
-                  <MenuItem href="/deals/gear" onClose={() => setMobileMenuOpen(false)}>
-                    Remote Gear Deals
-                  </MenuItem>
-                </NavMobileGroup>
-
-                <NavMobileGroup title="Guides">
-                  <div className="mb-3">
-                    <p className="text-xs text-blue-600 font-medium mb-1">Security Guides</p>
-                    <MenuItem href="/guides/cybersecurity-basics" onClose={() => setMobileMenuOpen(false)}>
-                      Cybersecurity Basics
-                    </MenuItem>
-                    <MenuItem href="/guides/secure-setup" onClose={() => setMobileMenuOpen(false)} featured>
-                      Secure Remote Workspace
-                    </MenuItem>
-                  </div>
-                  <div>
-                    <p className="text-xs text-emerald-600 font-medium mb-1">Remote Work Guides</p>
-                    <MenuItem href="/guides/remote-work-starter" onClose={() => setMobileMenuOpen(false)} featured>
-                      Remote Work Starter Kit
-                    </MenuItem>
-                    <MenuItem href="/guides/privacy" onClose={() => setMobileMenuOpen(false)}>
-                      Privacy Essentials
-                    </MenuItem>
-                  </div>
-                </NavMobileGroup>
-
-                <NavMobileGroup title="Reviews">
-                  <MenuItem href="/reviews/software" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Software Reviews
-                  </MenuItem>
-                  <MenuItem href="/reviews/hardware" onClose={() => setMobileMenuOpen(false)} affiliate>
-                    Hardware Reviews
-                  </MenuItem>
-                  <MenuItem href="/reviews/platforms" onClose={() => setMobileMenuOpen(false)}>
-                    Remote Job Platforms
-                  </MenuItem>
-                </NavMobileGroup>
-
-                {/* Disclosure */}
-                <div className="pt-6 border-t">
-                  <p className="text-xs text-gray-500">
-                    💡 <strong>Note:</strong> Some links are affiliate links. We earn commission at no extra cost to you. We only recommend tools we use and trust.
-                  </p>
-                </div>
-              </div>
-            </div>
+                Job Board
+              </MenuItem>
+              <MenuItem href="/remote-jobs/tech-jobs">
+                Tech Jobs
+              </MenuItem>
+              <MenuItem href="/remote-jobs/entry-level">
+                Entry Level
+              </MenuItem>
+            </NavMobileGroup>
           </div>
-        </>
+        </div>
       )}
     </nav>
   );
 }
 
-// Desktop Navigation Item Component
-function NavDesktopItem({ 
-  title, 
-  children, 
-  icon 
-}: { 
-  title: string; 
-  children: React.ReactNode;
+/* ===================== COMPONENTS ===================== */
+
+function NavDesktopItem({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
   icon?: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <div className="relative group">
-      <button className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+      <button
+        type="button"
+        className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-blue-600"
+      >
         {icon}
-        {title} 
-        <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+        {title}
+        <ChevronDown
+          size={14}
+          className="transition-transform group-hover:rotate-180"
+        />
       </button>
-      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 p-0 bg-white border border-gray-200 rounded-lg shadow-xl z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+
+      <div className="absolute left-1/2 z-50 mt-2 -translate-x-1/2 rounded-lg border bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
         {children}
       </div>
     </div>
   );
 }
 
-// Mobile Group Component
-function NavMobileGroup({ title, children }: { title: string; children: React.ReactNode }) {
+function NavMobileGroup({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="mb-4">
       <button
-        className="flex items-center justify-between w-full text-left font-medium py-3 text-gray-800"
+        type="button"
         onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between py-3 font-medium"
       >
         {title}
-        <ChevronDown size={16} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={16}
+          className={`transition-transform ${
+            open ? 'rotate-180' : ''
+          }`}
+        />
       </button>
+
       {open && (
-        <div className="ml-3 mt-1 space-y-1 border-l pl-3">
+        <div className="ml-3 border-l pl-3 space-y-1">
           {children}
         </div>
       )}
@@ -410,70 +270,49 @@ function NavMobileGroup({ title, children }: { title: string; children: React.Re
   );
 }
 
-// Menu Item Component
-interface MenuItemProps {
+function MenuItem({
+  href,
+  children,
+  featured,
+}: {
   href: string;
   children: React.ReactNode;
-  onClose?: () => void;
-  affiliate?: boolean;
-  badge?: string;
   featured?: boolean;
-}
-
-function MenuItem({ href, children, onClose, affiliate, badge, featured }: MenuItemProps) {
+}) {
   return (
     <Link
       href={href}
-      className={`block rounded-lg px-3 py-2.5 text-sm transition-all ${
-        featured 
-          ? 'bg-linear-to-r from-emerald-50 to-emerald-100 text-emerald-800 border border-emerald-200 hover:from-emerald-100 hover:to-emerald-200' 
-          : 'hover:bg-gray-50 text-gray-700'
+      className={`block rounded-md px-3 py-2 text-sm transition ${
+        featured
+          ? 'bg-emerald-100 text-emerald-800'
+          : 'hover:bg-gray-100'
       }`}
-      onClick={onClose}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {affiliate && (
-            <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
-              $
-            </span>
-          )}
-          <span>{children}</span>
-        </div>
-        {badge && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-            {badge}
-          </span>
-        )}
-      </div>
+      {children}
     </Link>
   );
 }
 
-// Deal Item Component
-interface DealItemProps {
+function DealItem({
+  href,
+  label,
+  expires,
+}: {
+  href: string;
   label: string;
   expires: string;
-  href: string;
-  onClose?: () => void;
-  mobile?: boolean;
-}
-
-function DealItem({ label, expires, href, onClose, mobile = false }: DealItemProps) {
+}) {
   return (
     <Link
       href={href}
-      className={`block rounded-lg px-3 py-2.5 text-sm transition-all bg-linear-to-r from-amber-50 to-white border border-amber-200 hover:from-amber-100 hover:to-white ${
-        mobile ? 'mb-2' : ''
-      }`}
-      onClick={onClose}
+      className="flex items-center justify-between rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm hover:bg-amber-100"
     >
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-amber-800">{label}</span>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-          {expires}
-        </span>
-      </div>
+      <span className="font-medium text-amber-800">
+        {label}
+      </span>
+      <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs text-amber-800">
+        {expires}
+      </span>
     </Link>
   );
 }

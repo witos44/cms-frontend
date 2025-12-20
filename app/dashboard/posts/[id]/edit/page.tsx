@@ -23,6 +23,34 @@ function extractImagesFromHTML(html: string): string[] {
   return matches.map(m => m[1]);
 }
 
+/* ===== CATEGORY → SECTION MAP ===== */
+const SECTION_MAP: Record<string, { value: string; label: string }[]> = {
+  guides: [
+    { value: 'security-basics', label: 'Security Basics' },
+    { value: 'privacy-essentials', label: 'Privacy Essentials' },
+    { value: 'secure-workspace', label: 'Secure Workspace' },
+    { value: 'digital-footprint', label: 'Digital Footprint' },
+    { value: 'remote-starter-kit', label: 'Remote Starter Kit' },
+    { value: 'productivity', label: 'Productivity' },
+    { value: 'remote-interview', label: 'Remote Interview' },
+    { value: 'digital-nomad', label: 'Digital Nomad' },
+  ],
+  deals: [
+    { value: 'nordvpn', label: 'NordVPN Deal' },
+    { value: 'dashlane', label: 'Dashlane Deal' },
+    { value: 'notion', label: 'Notion Deal' },
+    { value: 'vpn-deals', label: 'VPN Deals' },
+    { value: 'software-deals', label: 'Software Deals' },
+    { value: 'gear-deals', label: 'Gear Deals' },
+  ],
+  'remote-jobs': [
+    { value: 'job-boards', label: 'Browse Job Board' },
+    { value: 'tech-jobs', label: 'Tech Jobs' },
+    { value: 'entry-level', label: 'Entry Level' },
+    { value: 'freelance', label: 'Freelance' },
+  ],
+};
+
 export default function EditPostPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -36,6 +64,7 @@ export default function EditPostPage() {
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
+  const [section, setSection] = useState('');
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
   /* ================= FETCH POST ================= */
@@ -45,7 +74,7 @@ export default function EditPostPage() {
     const fetchPost = async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('title, slug, content, category, cover_image')
+        .select('title, slug, content, category, section, cover_image')
         .eq('id', id)
         .single();
 
@@ -58,6 +87,7 @@ export default function EditPostPage() {
       setSlug(data.slug ?? '');
       setContent(data.content ?? '');
       setCategory(data.category ?? '');
+      setSection(data.section ?? '');
       setCoverImage(data.cover_image ?? null);
       setLoading(false);
     };
@@ -65,27 +95,7 @@ export default function EditPostPage() {
     fetchPost();
   }, [id, supabase]);
 
-  /* ================= COVER UPLOAD ================= */
-  const handleCoverUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('postId', id);
-
-    const res = await fetch('/api/admin/upload-cover', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      toast.error('Upload cover image failed');
-      return;
-    }
-
-    const data = await res.json();
-    setCoverImage(data.url);
-  };
-
-  /* ================= SAVE DRAFT (FIXED) ================= */
+  /* ================= SAVE ================= */
   const handleSave = async () => {
     setSaving(true);
 
@@ -98,8 +108,9 @@ export default function EditPostPage() {
         slug,
         content,
         category,
+        section,
         cover_image: coverImage,
-        images, // ✅ FIX
+        images,
       })
       .eq('id', id);
 
@@ -116,8 +127,8 @@ export default function EditPostPage() {
 
   /* ================= PUBLISH ================= */
   const handlePublish = async () => {
-    if (!category) {
-      toast.error('Please select a category');
+    if (!category || !section) {
+      toast.error('Category & section required');
       return;
     }
 
@@ -126,14 +137,13 @@ export default function EditPostPage() {
     const res = await fetch('/api/admin/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, category }),
+      body: JSON.stringify({ id, category, section }),
     });
 
     setPublishing(false);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      toast.error(err.error || 'Publish failed');
+      toast.error('Publish failed');
       return;
     }
 
@@ -147,52 +157,42 @@ export default function EditPostPage() {
     <div className="p-6 space-y-6 max-w-5xl">
       <h1 className="text-2xl font-bold">Edit Post</h1>
 
-      <Input
-        placeholder="Post title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+      <Input value={title} onChange={e => setTitle(e.target.value)} />
+      <Input value={slug} onChange={e => setSlug(e.target.value)} />
 
-      <Input
-        placeholder="Slug"
-        value={slug}
-        onChange={(e) => setSlug(e.target.value)}
-      />
-
-      <Select value={category} onValueChange={setCategory}>
+      {/* CATEGORY */}
+      <Select
+        value={category}
+        onValueChange={(val) => {
+          setCategory(val);
+          setSection('');
+        }}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="security-tools">Security Tools</SelectItem>
-          <SelectItem value="remote-work">Remote Work</SelectItem>
-          <SelectItem value="deals">Deals</SelectItem>
           <SelectItem value="guides">Guides</SelectItem>
-          <SelectItem value="reviews">Reviews</SelectItem>
+          <SelectItem value="deals">Deals</SelectItem>
+          <SelectItem value="remote-jobs">Remote Jobs</SelectItem>
         </SelectContent>
       </Select>
 
-      {/* ===== COVER IMAGE ===== */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Cover Image</label>
-
-        {coverImage && (
-          <img
-            src={coverImage}
-            alt="Cover"
-            className="w-full h-64 object-cover rounded-md border"
-          />
-        )}
-
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleCoverUpload(file);
-          }}
-        />
-      </div>
+      {/* SECTION */}
+      {category && (
+        <Select value={section} onValueChange={setSection}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select section" />
+          </SelectTrigger>
+          <SelectContent>
+            {SECTION_MAP[category]?.map((s) => (
+              <SelectItem key={s.value} value={s.value}>
+                {s.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
       <PostEditor content={content} onChange={setContent} />
 
@@ -200,12 +200,7 @@ export default function EditPostPage() {
         <Button onClick={handleSave} disabled={saving}>
           Save Draft
         </Button>
-
-        <Button
-          className="bg-green-600 hover:bg-green-700"
-          onClick={handlePublish}
-          disabled={publishing}
-        >
+        <Button onClick={handlePublish} disabled={publishing}>
           Publish
         </Button>
       </div>
