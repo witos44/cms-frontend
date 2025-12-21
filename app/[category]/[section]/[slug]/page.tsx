@@ -1,19 +1,22 @@
 // app/[category]/[section]/[slug]/page.tsx
-import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { publicClient } from '@/lib/supabase/public-client';
 
 export default async function PostDetailPage({
   params,
 }: {
   params: Promise<{ category: string; section: string; slug: string }>;
 }) {
+  // Unwrap params Promise
   const { category, section, slug } = await params;
-  const supabase = await createClient();
 
-  const { data: post, error } = await supabase
+  console.log(`Fetching post: ${category}/${section}/${slug}`);
+
+  // Gunakan publicClient untuk akses tanpa login
+  const { data: post, error } = await publicClient
     .from('posts')
     .select('*')
     .eq('status', 'published')
@@ -36,51 +39,104 @@ export default async function PostDetailPage({
     : 'Not published';
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {/* Card utama - tambahkan border dan background putih */}
-      <Card className="border border-gray-200 bg-white shadow-sm">
-        <CardHeader className="p-0 pb-6">
-          <div className="flex flex-col md:flex-row md:items-start gap-6">
-            <div className="flex-1">
-              <Badge variant="secondary" className="mb-3">
-                {category}
-              </Badge>
-              <CardTitle className="text-3xl font-bold leading-tight">
-                {post.title}
-              </CardTitle>
-              <p className="text-sm text-muted-foreground mt-2">
-                Published on {publishedDate}
-              </p>
-            </div>
-            {post.cover_image && (
-              <img
-                src={post.cover_image}
-                alt={post.title}
-                className="w-full md:w-48 h-40 object-cover rounded-lg"
-              />
-            )}
-          </div>
-        </CardHeader>
-      </Card>
+    <div className="max-w-4xl mx-auto p-4 md:p-6 mt-20">
+      {/* Header Section */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <Badge variant="secondary" className="capitalize">
+            {category}
+          </Badge>
+          <Separator orientation="vertical" className="h-4" />
+          <Badge variant="outline" className="capitalize">
+            {section.replace(/-/g, ' ')}
+          </Badge>
+        </div>
+        
+        <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
+          {post.title}
+        </h1>
+        
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span>Published on {publishedDate}</span>
+          <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+            {post.read_time || '5 min read'}
+          </span>
+        </div>
+      </div>
 
-      {/* Card konten - tambahkan border dan background putih */}
-      <Card className="mt-8 border border-gray-200 bg-white shadow-sm">
-        <CardContent className="prose prose-lg dark:prose-invert max-w-none p-6">
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      {/* Cover Image */}
+      {post.cover_image && (
+        <div className="mb-8">
+          <img
+            src={post.cover_image}
+            alt={post.title}
+            className="w-full h-auto max-h-[400px] object-cover rounded-lg shadow-lg"
+          />
+        </div>
+      )}
+
+      {/* Content Card */}
+      <Card className="border border-gray-200 bg-white shadow-sm mb-8">
+        <CardContent className="p-6 md:p-8">
+          <div 
+            className="prose prose-lg max-w-none 
+                       prose-headings:text-gray-900
+                       prose-p:text-gray-700
+                       prose-li:text-gray-700
+                       prose-strong:text-gray-900
+                       prose-a:text-blue-600 hover:prose-a:text-blue-800
+                       prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded
+                       prose-pre:bg-gray-900 prose-pre:text-gray-100
+                       prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4"
+            dangerouslySetInnerHTML={{ __html: post.content || '' }}
+          />
         </CardContent>
       </Card>
 
-      <div className="mt-10 flex flex-wrap gap-3 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <span>Category:</span>
-          <Badge variant="outline">{category}</Badge>
-        </div>
-        <Separator orientation="vertical" className="h-4" />
-        <div className="flex items-center gap-2">
-          <span>Section:</span>
-          <Badge variant="outline">{section}</Badge>
+      {/* Meta Information */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Category:</span>
+            <Badge variant="outline" className="capitalize">
+              {category}
+            </Badge>
+          </div>
+          
+          <Separator orientation="vertical" className="h-4" />
+          
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Section:</span>
+            <Badge variant="outline" className="capitalize">
+              {section.replace(/-/g, ' ')}
+            </Badge>
+          </div>
+          
+          {post.tags && post.tags.length > 0 && (
+            <>
+              <Separator orientation="vertical" className="h-4" />
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Tags:</span>
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map((tag: string, index: number) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Related Posts Section (Optional) */}
+      {/* <div className="mt-12 pt-8 border-t border-gray-200">
+        <h3 className="text-xl font-semibold mb-4">Related Posts</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          // You can add related posts fetching here
+        </div>
+      </div> */}
     </div>
   );
 }

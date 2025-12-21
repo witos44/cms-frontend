@@ -2,6 +2,7 @@
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { headers } from 'next/headers';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -49,6 +50,21 @@ export async function createClient() {
             path: '/',
           });
         },
+      },
+    }
+  );
+}
+
+// Client khusus untuk akses publik tanpa session (untuk halaman yang diakses tanpa login)
+export function createPublicClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
       },
     }
   );
