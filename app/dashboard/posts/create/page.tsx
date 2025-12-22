@@ -32,19 +32,19 @@ export default function CreatePostPage() {
     if (res.ok) {
       router.push('/dashboard/posts');
     } else {
-      alert('Gagal membuat post');
+      alert('Failed to create post');
     }
   };
 
   return (
     <div className="p-6 max-w-3xl">
-      <h1 className="text-2xl font-bold mb-6">Buat Posting Baru</h1>
+      <h1 className="text-2xl font-bold mb-6">Create New Post</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
         {/* TITLE */}
         <div>
-          <label className="block text-sm font-medium">Judul</label>
+          <label className="block text-sm font-medium">Title</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -72,9 +72,10 @@ export default function CreatePostPage() {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full p-2 border rounded"
           >
+            <option value="guides">Reviews</option>
             <option value="guides">Guides</option>
-            <option value="deals">Deals</option>
-            <option value="remote-jobs">Remote Jobs</option>
+            <option value="deals">Tools</option>
+            <option value="remote-jobs">Deals</option>
           </select>
         </div>
 
@@ -86,33 +87,50 @@ export default function CreatePostPage() {
             onChange={(e) => setSection(e.target.value)}
             className="w-full p-2 border rounded"
           >
+            {category === 'reviews' && (
+              <>
+                <option value="best-vpns">Best VPNs</option>
+                <option value="password-managers">Password Managers</option>
+                <option value="antivirus">Antivirus</option>
+                <option value="encrypted-email">Encrypted Email</option>
+                <option value="yubikey-2fa-keys">YubiKey & 2FA Keys</option>
+                <option value="privacy-browsers">Privacy Browsers</option>
+                <option value="secure-note-apps">Secure Note Apps</option>
+                <option value="self-hosted-alternatives">Self-Hosted Alternatives</option>
+              </>
+            )}
+
             {category === 'guides' && (
               <>
+                <option value="privacy-checklist">Privacy Checklist</option>
+                <option value="leave-google-guide">Leave Google Guide</option>
+                <option value="secure-browsing">Secure Browsing</option>
+                <option value="reduce-digital-footprint">Reduce Digital Footprint</option>
                 <option value="security-basics">Security Basics</option>
-                <option value="privacy-essentials">Privacy Essentials</option>
-                <option value="secure-workspace">Secure Workspace</option>
-                <option value="digital-footprint">Digital Footprint</option>
-                <option value="remote-starter-kit">Remote Starter Kit</option>
-                <option value="productivity">Productivity</option>
-                <option value="remote-interview">Remote Interview</option>
-                <option value="digital-nomad">Digital Nomad</option>
+                <option value="2fa-setup-guide">2FA Setup Guide</option>
+                <option value="encrypted-backups">Encrypted Backups</option>
+                <option value="home-network-security">Home Network Security</option>
+              </>
+            )}
+
+            {category === 'tools' && (
+              <>
+                <option value="vpns">VPNs</option>
+                <option value="password-managers">Password Managers</option>
+                <option value="encryption-tools">Encryption Tools</option>
+                <option value="open-source-only">Open Source Only</option>
+                <option value="self-hosted-tools">Self-Hosted Tools</option>
               </>
             )}
 
             {category === 'deals' && (
               <>
+                <option value="nordvpn-deals">NordVPN Deals</option>
+                <option value="1password-deals">1Password Deals</option>
+                <option value="proton-unlimited-deals">Proton Unlimited Deals</option>
                 <option value="vpn-deals">VPN Deals</option>
                 <option value="software-deals">Software Deals</option>
-                <option value="gear-deals">Gear Deals</option>
-              </>
-            )}
-
-            {category === 'remote-jobs' && (
-              <>
-                <option value="job-board">Job Board</option>
-                <option value="tech-jobs">Tech Jobs</option>
-                <option value="entry-level">Entry Level</option>
-                <option value="freelance">Freelance</option>
+                <option value="hardware-deals">Hardware Deals</option>
               </>
             )}
           </select>

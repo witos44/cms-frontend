@@ -1,80 +1,82 @@
-"use client"; // Tambahkan ini agar bisa mendeteksi URL
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
-  // Cek apakah user sedang di halaman admin
   const isAdminPage = pathname?.startsWith("/admin");
 
   return (
-    // PERBAIKAN: Tambahkan md:ml-64 HANYA jika di halaman admin
     <footer className={`border-t bg-gray-50 mt-12 ${isAdminPage ? "md:ml-64" : ""}`}>
       <div className="mx-auto max-w-7xl px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-        {/* Brand - TETAP SAMA */}
+        {/* Brand */}
         <div>
-          <Link href="/" className="flex items-center bg-linear-to-r from-blue-600 to-emerald-600">
-            <img src="/nsecure.png" alt="SecureRemote" className="h-8 w-auto" />
+          <Link href="/" className="flex items-center">
+            <img src="/nsecure.png" alt="nsecure" className="h-8 w-auto" />
           </Link>
           <p className="text-sm text-gray-600 mt-2">
-            Security tools, remote job guides, and trusted reviews for working safely from anywhere.
+            Independent reviews and guides for privacy-first tools. No sponsored rankings—just honest security advice.
           </p>
         </div>
 
-        {/* Security Tools - TETAP SAMA */}
+        {/* Reviews */}
         <div>
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            Security Tools
+            Reviews
           </h3>
           <ul className="space-y-2 text-sm">
-            <FooterLink href="/vpn">Best VPNs</FooterLink>
-            <FooterLink href="/password-managers">Password Managers</FooterLink>
-            <FooterLink href="/antivirus">Antivirus</FooterLink>
-            <FooterLink href="/secure-cloud">Secure Cloud Storage</FooterLink>
-            <FooterLink href="/hardware-keys">2FA Keys</FooterLink>
+            <FooterLink href="/reviews/best-vpn">Best VPNs</FooterLink>
+            <FooterLink href="/reviews/password-managers">Password Managers</FooterLink>
+            <FooterLink href="/reviews/encrypted-email">Encrypted Email</FooterLink>
+            <FooterLink href="/reviews/yubikey">2FA Hardware Keys</FooterLink>
+            <FooterLink href="/reviews/privacy-browsers">Privacy Browsers</FooterLink>
           </ul>
         </div>
 
-        {/* Remote Work - TETAP SAMA */}
+        {/* Guides */}
         <div>
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            Work From Anywhere
+            Guides
           </h3>
           <ul className="space-y-2 text-sm">
-            <FooterLink href="/remote-jobs">Remote Job Boards</FooterLink>
-            <FooterLink href="/remote-tools">Remote Tools</FooterLink>
-            <FooterLink href="/best-laptops">Best Laptops</FooterLink>
-            <FooterLink href="/best-headsets">Headsets & Webcams</FooterLink>
+            <FooterLink href="/guides/privacy-checklist">Privacy Checklist</FooterLink>
+            <FooterLink href="/guides/leave-google">Leave Google Guide</FooterLink>
+            <FooterLink href="/guides/secure-browsing">Secure Browsing</FooterLink>
+            <FooterLink href="/guides/security-basics">Security Basics</FooterLink>
+            <FooterLink href="/guides/self-hosted-tools">Self-Hosted Alternatives</FooterLink>
           </ul>
         </div>
 
-        {/* Company - TETAP SAMA */}
+        {/* Company & Legal */}
         <div>
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            Company
+            Resources
           </h3>
           <ul className="space-y-2 text-sm">
-            <FooterLink href="/about">About</FooterLink>
+            <FooterLink href="/about">About Us</FooterLink>
             <FooterLink href="/contact">Contact</FooterLink>
-            <FooterLink href="/blog">Blog</FooterLink>
-            <FooterLink href="/resources">Resources</FooterLink>
+            <FooterLink href="/tools">All Tools</FooterLink>
+            <FooterLink href="/deals">Latest Deals</FooterLink>
           </ul>
         </div>
       </div>
 
       <div className="border-t mx-auto max-w-7xl px-6 py-6 flex flex-col md:flex-row justify-between text-sm text-gray-600">
-        <p>© {new Date().getFullYear()} Net Secure. All rights reserved.</p>
-        <div className="flex space-x-4 mt-3 md:mt-0">
+        <p>© {new Date().getFullYear()} nsecure.store. All rights reserved.</p>
+        <div className="flex flex-wrap gap-4 mt-3 md:mt-0">
           <Link href="/privacy" className="hover:underline">
             Privacy Policy
           </Link>
           <Link href="/terms" className="hover:underline">
-            Terms
+            Terms of Use
           </Link>
           <Link href="/affiliate-disclosure" className="hover:underline">
             Affiliate Disclosure
+          </Link>
+          <Link href="/methodology" className="hover:underline">
+            Review Methodology
           </Link>
         </div>
       </div>
@@ -82,7 +84,6 @@ export default function Footer() {
   );
 }
 
-// Komponen FooterLink tetap sama
 function FooterLink({
   href,
   children,

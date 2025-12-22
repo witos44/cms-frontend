@@ -11,7 +11,7 @@ export default async function CategoryPage({
   const { category } = params;
   const supabase = await createClient();
 
-  const validCategories = ["security-tools", "remote-work", "deals", "guides", "reviews"];
+  const validCategories = ["reviews", "guides", "tools", "deals"];
   if (!validCategories.includes(category)) {
     notFound();
   }

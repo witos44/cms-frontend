@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
-      {/* === Floating colored shapes (your original style) === */}
+      {/* === Floating colored shapes (original style preserved) === */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-orange-400 rounded-full opacity-70"></div>
       <div className="absolute top-40 right-10 w-24 h-24 bg-blue-400 rounded-full opacity-70"></div>
       <div className="absolute bottom-10 right-20 w-8 h-8 bg-green-400 rounded-full"></div>
@@ -16,27 +16,26 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
           {/* Left Column */}
           <div className="md:w-1/2 space-y-6">
-            {/* ✅ Tambahkan suppressHydrationWarning pada elemen yang berpotensi dimodifikasi browser */}
             <h1 
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
               suppressHydrationWarning
             >
-              Secure Your Remote Work,
+              Take Back Control of Your
               <br />
-              <span className="text-blue-600">Without Compromise.</span>
+              <span className="text-blue-600">Digital Life.</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-lg">
-              We test, compare, and recommend the best security tools, hardware, and software so you can work from anywhere — safely, efficiently, and confidently.
+              Independent reviews, practical guides, and trusted tools to help you protect your data, privacy, and identity—online and off.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
-                href="/guides/remote-work-starter"
+                href="/guides/privacy-checklist"
                 className="bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition inline-block text-center"
               >
-                Start Your Secure Setup
+                Get Privacy Checklist
               </Link>
               <Link
-                href="/reviews/software"
+                href="/reviews"
                 className="border border-gray-300 hover:border-gray-400 text-gray-800 font-medium py-3 px-6 rounded-lg transition inline-block text-center"
               >
                 See Top Reviews
@@ -53,8 +52,8 @@ export default function HomePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 6a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-white">Trusted by 50K+ Remote Workers</h3>
-                <p className="text-sm text-white mt-2">Real users. Real results. Zero fluff.</p>
+                <h3 className="text-xl font-semibold text-white">Trusted by Privacy-Conscious Users</h3>
+                <p className="text-sm text-white mt-2">No sponsors. No bias. Just facts.</p>
               </div>
             </div>
           </div>
@@ -65,24 +64,24 @@ export default function HomePage() {
       <section className="py-20 bg-gray-50 px-4 md:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            Everything You Need to Work Safely & Productively
+            Your Toolkit for a Private & Secure Digital Life
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Security Tools",
-                desc: "Top-rated VPNs, password managers, antivirus, and 2FA keys — tested for privacy, speed, and ease of use.",
-                link: "/security-tools",
+                title: "In-Depth Reviews",
+                desc: "Unbiased comparisons of VPNs, password managers, encrypted email, and hardware security keys—tested for real-world privacy.",
+                link: "/reviews",
               },
               {
-                title: "Remote Work Gear",
-                desc: "Best laptops, headsets, webcams, and ergonomic setups — curated for performance and comfort.",
-                link: "/work-from-anywhere",
+                title: "Practical Guides",
+                desc: "Step-by-step tutorials to leave Big Tech, secure your devices, encrypt your data, and build a self-hosted stack.",
+                link: "/guides",
               },
               {
-                title: "Deals & Discounts",
-                desc: "Exclusive savings on software, hardware, and cloud services — updated weekly.",
-                link: "/deals",
+                title: "Curated Tools & Deals",
+                desc: "Discover privacy-respecting software, open-source alternatives, and exclusive discounts—updated weekly.",
+                link: "/tools",
               },
             ].map((item, i) => (
               <div key={i} className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-sm transition">
@@ -104,16 +103,16 @@ export default function HomePage() {
       <section className="py-20 px-4 md:px-8 bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Build Your Secure Remote Workspace?
+            Ready to Escape Data Surveillance?
           </h2>
           <p className="text-xl mb-8 text-blue-100">
-            Get our free checklist + exclusive tool discounts sent to your inbox.
+            Get our free Privacy Starter Kit + exclusive deals on trusted tools.
           </p>
           <Link
-            href="/guides/secure-setup"
+            href="/guides/privacy-checklist"
             className="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition"
           >
-            Download Free Guide
+            Download Free Kit
           </Link>
         </div>
       </section>
@@ -121,7 +120,7 @@ export default function HomePage() {
       {/* Footer Callout */}
       <section className="py-12 px-4 md:px-8 text-center border-t relative z-10">
         <p className="text-gray-600">
-          Trusted by professionals at <strong>Google, Shopify, and Buffer</strong> — and thousands like you.
+          Used by developers, journalists, and privacy advocates worldwide — and everyday users like you.
         </p>
       </section>
     </main>

@@ -25,29 +25,41 @@ function extractImagesFromHTML(html: string): string[] {
 
 /* ===== CATEGORY → SECTION MAP ===== */
 const SECTION_MAP: Record<string, { value: string; label: string }[]> = {
-  guides: [
-    { value: 'security-basics', label: 'Security Basics' },
-    { value: 'privacy-essentials', label: 'Privacy Essentials' },
-    { value: 'secure-workspace', label: 'Secure Workspace' },
-    { value: 'digital-footprint', label: 'Digital Footprint' },
-    { value: 'remote-starter-kit', label: 'Remote Starter Kit' },
-    { value: 'productivity', label: 'Productivity' },
-    { value: 'remote-interview', label: 'Remote Interview' },
-    { value: 'digital-nomad', label: 'Digital Nomad' },
+  reviews: [
+    { value: 'best-vpns', label: 'Best VPNs' },
+    { value: 'password-managers', label: 'Password Managers' },
+    { value: 'antivirus', label: 'Antivirus' },
+    { value: 'encrypted-email', label: 'Encrypted Email' },
+    { value: 'yubikey-2fa-keys', label: 'YubiKey & 2FA Keys' },
+    { value: 'privacy-browsers', label: 'Privacy Browsers' },
+    { value: 'secure-note-apps', label: 'Secure Note Apps' },
+    { value: 'self-hosted-alternatives', label: 'Self-Hosted Alternatives' },
   ],
-  deals: [
-    { value: 'nordvpn', label: 'NordVPN Deal' },
-    { value: 'dashlane', label: 'Dashlane Deal' },
-    { value: 'notion', label: 'Notion Deal' },
+  guides: [
+    { value: 'privacy-checklist', label: 'Privacy Checklist' },
+    { value: 'leave-google-guide', label: 'Leave Google Guide' },
+    { value: 'secure-browsing', label: 'Secure Browsing' },
+    { value: 'reduce-digital-footprint', label: 'Reduce Digital Footprint' },
+    { value: 'security-basics', label: 'Security Basics' },
+    { value: '2fa-setup-guide', label: '2FA Setup Guide' },
+    { value: 'encrypted-backups', label: 'Encrypted Backups' },
+    { value: 'home-network-security', label: 'Home Network Security' },
+  ],
+  tools: [
+    { value: 'vpns', label: 'VPNs' },
+    { value: 'password-managers', label: 'Password Managers' },
+    { value: 'encryption-tools', label: 'Encryption Tools' },
+    { value: 'open-source-only', label: 'Open Source Only' },
+    { value: 'self-hosted-tools', label: 'Self-Hosted Tools' },
+    
+  ],
+  'deals': [
+    { value: 'nordvpn-deals', label: 'NordVPN Deals' },
+    { value: '1password-deals', label: '1Password Deals' },
+    { value: 'proton-unlimited-deals', label: 'Proton Unlimited Deals' },
     { value: 'vpn-deals', label: 'VPN Deals' },
     { value: 'software-deals', label: 'Software Deals' },
-    { value: 'gear-deals', label: 'Gear Deals' },
-  ],
-  'remote-jobs': [
-    { value: 'job-boards', label: 'Browse Job Board' },
-    { value: 'tech-jobs', label: 'Tech Jobs' },
-    { value: 'entry-level', label: 'Entry Level' },
-    { value: 'freelance', label: 'Freelance' },
+    { value: 'hardware-deals', label: 'Hardware Deals' },
   ],
 };
 
@@ -172,9 +184,10 @@ export default function EditPostPage() {
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="reviews">Reviews</SelectItem>
           <SelectItem value="guides">Guides</SelectItem>
+          <SelectItem value="tools">Tools</SelectItem>
           <SelectItem value="deals">Deals</SelectItem>
-          <SelectItem value="remote-jobs">Remote Jobs</SelectItem>
         </SelectContent>
       </Select>
 

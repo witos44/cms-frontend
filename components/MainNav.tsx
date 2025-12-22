@@ -9,7 +9,8 @@ import {
   ChevronDown,
   BookOpen,
   Tag,
-  Briefcase,
+  FileText,
+  Wrench,
   Search,
 } from 'lucide-react';
 import { useState, useEffect, ReactNode } from 'react';
@@ -46,48 +47,108 @@ export default function MainNav() {
           <Link href="/" className="flex items-center gap-2">
             <img src="/nsecure.png" alt="nsecure" className="h-8 w-auto" />
             <span className="hidden md:inline text-sm text-gray-600">
-              Security × Remote Work
+              Security × Privacy
             </span>
           </Link>
 
           {/* DESKTOP */}
           <div className="hidden md:flex items-center gap-6">
-            {/* GUIDES */}
-            <NavDesktopItem title="Guides" icon={<BookOpen size={14} />}>
+            {/* REVIEWS */}
+            <NavDesktopItem title="Reviews" icon={<FileText size={14} />}>
               <div className="grid grid-cols-2 gap-4 p-4 w-[480px]">
                 <div>
                   <h4 className="text-sm font-medium text-blue-600 mb-2">
-                    Security
+                    Core Tools
                   </h4>
-                  <MenuItem href="/guides/security-basics">
-                    Security Basics
+                  <MenuItem href="/reviews/best-vpns">Best VPNs</MenuItem>
+                  <MenuItem href="/reviews/password-managers">
+                    Password Managers
                   </MenuItem>
-                  <MenuItem href="/guides/privacy-essentials">
-                    Privacy Essentials
-                  </MenuItem>
-                  <MenuItem href="/guides/secure-workspace">
-                    Secure Workspace
-                  </MenuItem>
-                  <MenuItem href="/guides/digital-footprint">
-                    Digital Footprint
+                  <MenuItem href="/reviews/antivirus">Antivirus</MenuItem>
+                  <MenuItem href="/reviews/encrypted-email">
+                    Encrypted Email
                   </MenuItem>
                 </div>
 
                 <div>
                   <h4 className="text-sm font-medium text-emerald-600 mb-2">
-                    Remote Work
+                    Hardware & Apps
                   </h4>
-                  <MenuItem href="/guides/remote-starter-kit" featured>
-                    Remote Starter Kit
+                  <MenuItem href="/reviews/yubikey-2fa-keys" featured>
+                    YubiKey & 2FA Keys
                   </MenuItem>
-                  <MenuItem href="/guides/productivity">
-                    Productivity
+                  <MenuItem href="/reviews/privacy-browsers">
+                    Privacy Browsers
                   </MenuItem>
-                  <MenuItem href="/guides/remote-interview">
-                    Remote Interview
+                  <MenuItem href="/reviews/secure-note-apps">
+                    Secure Note Apps
                   </MenuItem>
-                  <MenuItem href="/guides/digital-nomad">
-                    Digital Nomad
+                  <MenuItem href="/reviews/self-hosted-alternatives">
+                    Self-Hosted Alternatives
+                  </MenuItem>
+                </div>
+              </div>
+            </NavDesktopItem>
+
+            {/* GUIDES */}
+            <NavDesktopItem title="Guides" icon={<BookOpen size={14} />}>
+              <div className="grid grid-cols-2 gap-4 p-4 w-[480px]">
+                <div>
+                  <h4 className="text-sm font-medium text-blue-600 mb-2">
+                    Privacy
+                  </h4>
+                  <MenuItem href="/guides/privacy-checklist">
+                    Privacy Checklist
+                  </MenuItem>
+                  <MenuItem href="/guides/leave-google-guide">
+                    Leave Google Guide
+                  </MenuItem>
+                  <MenuItem href="/guides/secure-browsing">
+                    Secure Browsing
+                  </MenuItem>
+                  <MenuItem href="/guides/reduce-digital-footprint">
+                    Reduce Digital Footprint
+                  </MenuItem>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-emerald-600 mb-2">
+                    Security
+                  </h4>
+                  <MenuItem href="/guides/security-basics" featured>
+                    Security Basics
+                  </MenuItem>
+                  <MenuItem href="/guides/2fa-setup-guide">2FA Setup Guide</MenuItem>
+                  <MenuItem href="/guides/encrypted-backups">
+                    Encrypted Backups
+                  </MenuItem>
+                  <MenuItem href="/guides/home-network-security">
+                    Home Network Security
+                  </MenuItem>
+                </div>
+              </div>
+            </NavDesktopItem>
+
+            {/* TOOLS */}
+            <NavDesktopItem title="Tools" icon={<Wrench size={14} />}>
+              <div className="p-4 w-[360px]">
+                <h4 className="text-sm font-medium text-purple-600 mb-3">
+                  🔍 Discover Privacy Tools
+                </h4>
+
+                <div className="space-y-2">
+                  <MenuItem href="/tools/vpns">VPNs</MenuItem>
+                  <MenuItem href="/tools/password-managers">
+                    Password Managers
+                  </MenuItem>
+                  <MenuItem href="/tools/encryption-tools">
+                    Encryption Tools
+                  </MenuItem>
+                  <MenuItem href="/tools/open-source-only">
+                    Open Source Only
+                  </MenuItem>
+                  <MenuItem href="/tools/self-hosted-tools">
+                    Self-Hosted Tools
                   </MenuItem>
                 </div>
               </div>
@@ -102,19 +163,19 @@ export default function MainNav() {
 
                 <div className="space-y-2">
                   <DealItem
-                    href="/deals/nordvpn"
+                    href="/deals/nordvpn-deals"
                     label="NordVPN - 63% OFF"
                     expires="2 days"
                   />
                   <DealItem
-                    href="/deals/dashlane"
-                    label="Dashlane - Free 6 Months"
-                    expires="1 week"
+                    href="/deals/1password-deals"
+                    label="1Password - 30% OFF"
+                    expires="4 days"
                   />
                   <DealItem
-                    href="/deals/notion"
-                    label="Notion - 40% OFF"
-                    expires="5 days"
+                    href="/deals/proton-unlimited-deals"
+                    label="Proton Unlimited - 20% OFF"
+                    expires="1 week"
                   />
                 </div>
 
@@ -123,38 +184,7 @@ export default function MainNav() {
                   <MenuItem href="/deals/software-deals">
                     Software Deals
                   </MenuItem>
-                  <MenuItem href="/deals/gear-deals">Gear Deals</MenuItem>
-                </div>
-              </div>
-            </NavDesktopItem>
-
-            {/* REMOTE JOBS */}
-            <NavDesktopItem
-              title="Remote Jobs"
-              icon={<Briefcase size={14} />}
-            >
-              <div className="p-4 w-[360px]">
-                <MenuItem
-                  href="/remote-jobs/job-boards"
-                  featured
-                >
-                  <div className="flex items-center gap-2">
-                    <Search size={14} />
-                    Browse Job Board
-                    <Badge className="ml-auto">New</Badge>
-                  </div>
-                </MenuItem>
-
-                <div className="mt-3 space-y-1">
-                  <MenuItem href="/remote-jobs/tech-jobs">
-                    Tech Jobs
-                  </MenuItem>
-                  <MenuItem href="/remote-jobs/entry-level">
-                    Entry Level
-                  </MenuItem>
-                  <MenuItem href="/remote-jobs/freelance">
-                    Freelance
-                  </MenuItem>
+                  <MenuItem href="/deals/hardware-deals">Hardware Deals</MenuItem>
                 </div>
               </div>
             </NavDesktopItem>
@@ -207,60 +237,111 @@ export default function MainNav() {
 
             {/* Content */}
             <div className="p-4 space-y-1">
-              {/* GUIDES */}
-              <NavMobileGroup title="Guides" icon={<BookOpen size={16} />}>
-                <MobileMenuItem href="/guides/security-basics">
-                  Security Basics
+              {/* REVIEWS */}
+              <NavMobileGroup title="Reviews" icon={<FileText size={16} />}>
+                <MobileMenuItem href="/reviews/best-vpns">
+                  Best VPNs
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/privacy-essentials">
-                  Privacy Essentials
+                <MobileMenuItem href="/reviews/password-managers">
+                  Password Managers
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/secure-workspace">
-                  Secure Workspace
+                <MobileMenuItem href="/reviews/antivirus">
+                  Antivirus
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/digital-footprint">
-                  Digital Footprint
+                <MobileMenuItem href="/reviews/encrypted-email">
+                  Encrypted Email
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/remote-starter-kit" featured>
+                <MobileMenuItem href="/reviews/yubikey-2fa-keys" featured>
                   <div className="flex items-center justify-between">
-                    Remote Starter Kit
-                    <Badge className="ml-2 bg-emerald-100 text-emerald-800">
-                      Popular
+                    YubiKey & 2FA Keys
+                    <Badge className="ml-2 bg-blue-100 text-blue-800">
+                      Top Pick
                     </Badge>
                   </div>
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/productivity">
-                  Productivity
+                <MobileMenuItem href="/reviews/privacy-browsers">
+                  Privacy Browsers
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/remote-interview">
-                  Remote Interview
+                <MobileMenuItem href="/reviews/secure-note-apps">
+                  Secure Note Apps
                 </MobileMenuItem>
-                <MobileMenuItem href="/guides/digital-nomad">
-                  Digital Nomad
+                <MobileMenuItem href="/reviews/self-hosted-tools">
+                  Self-Hosted Tools
                 </MobileMenuItem>
+              </NavMobileGroup>
+
+              {/* GUIDES */}
+              <NavMobileGroup title="Guides" icon={<BookOpen size={16} />}>
+                <MobileMenuItem href="/guides/privacy-checklist">
+                  Privacy Checklist
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/leave-google-guide">
+                  Leave Google Guide
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/secure-browsing">
+                  Secure Browsing
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/reduce-digital-footprint">
+                  Reduce Digital Footprint
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/security-basics" featured>
+                  <div className="flex items-center justify-between">
+                    Security Basics
+                    <Badge className="ml-2 bg-emerald-100 text-emerald-800">
+                      Starter
+                    </Badge>
+                  </div>
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/2fa-setup-guide">
+                  2FA Setup Guide
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/encrypted-backups">
+                  Encrypted Backups
+                </MobileMenuItem>
+                <MobileMenuItem href="/guides/home-network-security">
+                  Home Network Security
+                </MobileMenuItem>
+              </NavMobileGroup>
+
+              {/* TOOLS */}
+              <NavMobileGroup title="Tools" icon={<Wrench size={16} />}>
+                <div className="space-y-1">
+                  <MobileMenuItem href="/tools/vpns">VPNs</MobileMenuItem>
+                  <MobileMenuItem href="/tools/password-managers">
+                    Password Managers
+                  </MobileMenuItem>
+                  <MobileMenuItem href="/tools/encryption-tools">
+                    Encryption Tools
+                  </MobileMenuItem>
+                  <MobileMenuItem href="/tools/open-source-only">
+                    Open Source Only
+                  </MobileMenuItem>
+                  <MobileMenuItem href="/tools/self-hosted-tools">
+                    Self-Hosted Tools
+                  </MobileMenuItem>
+                </div>
               </NavMobileGroup>
 
               {/* DEALS */}
               <NavMobileGroup title="Deals" icon={<Tag size={16} />}>
-                {/* Hot Deals Section */}
                 <div className="space-y-2 mb-3">
                   <div className="bg-linear-to-r from-amber-50 to-orange-50 rounded-lg p-3 border border-amber-200">
                     <h4 className="text-xs font-semibold text-amber-800 mb-2">🔥 Hot Deals</h4>
                     <div className="space-y-2">
                       <MobileDealItem
-                        href="/deals/nordvpn"
+                        href="/deals/nordvpn-deals"
                         label="NordVPN - 63% OFF"
                         expires="2 days"
                       />
                       <MobileDealItem
-                        href="/deals/dashlane"
-                        label="Dashlane - Free 6 Months"
-                        expires="1 week"
+                        href="/deals/1password-deals"
+                        label="1Password - 30% OFF"
+                        expires="4 days"
                       />
                       <MobileDealItem
-                        href="/deals/notion"
-                        label="Notion - 40% OFF"
-                        expires="5 days"
+                        href="/deals/proton-unlimited-deals"
+                        label="Proton Unlimited - 20% OFF"
+                        expires="1 week"
                       />
                     </div>
                   </div>
@@ -269,31 +350,7 @@ export default function MainNav() {
                 <div className="space-y-1">
                   <MobileMenuItem href="/deals/vpn-deals">VPN Deals</MobileMenuItem>
                   <MobileMenuItem href="/deals/software-deals">Software Deals</MobileMenuItem>
-                  <MobileMenuItem href="/deals/gear-deals">Gear Deals</MobileMenuItem>
-                </div>
-              </NavMobileGroup>
-
-              {/* REMOTE JOBS */}
-              <NavMobileGroup title="Remote Jobs" icon={<Briefcase size={16} />}>
-                <div className="space-y-1">
-                  <MobileMenuItem href="/remote-jobs/job-boards" featured>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Search size={14} />
-                        Job Board
-                      </div>
-                      <Badge className="ml-2">New</Badge>
-                    </div>
-                  </MobileMenuItem>
-                  <MobileMenuItem href="/remote-jobs/tech-jobs">
-                    Tech Jobs
-                  </MobileMenuItem>
-                  <MobileMenuItem href="/remote-jobs/entry-level">
-                    Entry Level
-                  </MobileMenuItem>
-                  <MobileMenuItem href="/remote-jobs/freelance">
-                    Freelance
-                  </MobileMenuItem>
+                  <MobileMenuItem href="/deals/hardware-deals">Hardware Deals</MobileMenuItem>
                 </div>
               </NavMobileGroup>
 
