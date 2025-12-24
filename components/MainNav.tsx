@@ -46,12 +46,37 @@ export default function MainNav() {
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-2">
             <img src="/nsecure.png" alt="nsecure" className="h-8 w-auto" />
-            <span className="hidden md:inline text-sm text-gray-600">
-              Security × Privacy
+            <span className="hidden md:inline text-xl text-green-600">
+              Security & Privacy
             </span>
           </Link>
 
-          {/* DESKTOP */}
+          {/* SEARCH BOX - Desktop */}
+          <form
+            action="/search"
+            method="get"
+            className="hidden md:flex items-center ml-4"
+          >
+            <div className="relative flex items-center rounded-full border border-input bg-background overflow-hidden shadow-sm">
+              <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+              <input
+                type="search"
+                name="q"
+                placeholder="Cari perusahaan atau kategori..."
+                className="pl-10 pr-4 py-2 w-[280px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <Button
+                type="submit"
+                size="icon"
+                variant="default"
+                className="ml-2 h-8 w-8 rounded-full bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700"
+              >
+                <Search size={16} className="text-white" />
+              </Button>
+            </div>
+          </form>
+
+          {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-6">
             {/* REVIEWS */}
             <NavDesktopItem title="Reviews" icon={<FileText size={14} />}>
@@ -190,15 +215,25 @@ export default function MainNav() {
             </NavDesktopItem>
           </div>
 
-          {/* MOBILE TOGGLE */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </Button>
+          {/* MOBILE TOGGLES: Search + Menu */}
+          <div className="flex items-center gap-2 md:hidden">
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+            >
+              <Link href="/search" aria-label="Search">
+                <Search size={20} />
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -224,14 +259,27 @@ export default function MainNav() {
                   <img src="/nsecure.png" alt="nsecure" className="h-7 w-auto" />
                   <span className="text-sm font-medium text-gray-700">Menu</span>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <X size={20} />
-                </Button>
+                <div className="flex gap-2">
+                  {/* Search button di mobile header */}
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                  >
+                    <Link href="/search" aria-label="Search">
+                      <Search size={20} />
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <X size={20} />
+                  </Button>
+                </div>
               </div>
             </div>
 

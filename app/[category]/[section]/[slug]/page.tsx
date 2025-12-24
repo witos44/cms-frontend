@@ -1,9 +1,10 @@
 // app/[category]/[section]/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { publicClient } from '@/lib/supabase/public-client';
+import { logUniqueVisit } from '@/lib/actions/logUniqueVisit'; // ✅ import action
 
 export default async function PostDetailPage({
   params,
@@ -12,6 +13,12 @@ export default async function PostDetailPage({
 }) {
   // Unwrap params Promise
   const { category, section, slug } = await params;
+
+  // ✅ Bangun path lengkap
+  const path = `/${category}/${section}/${slug}`;
+
+  // ✅ Catat kunjungan unik — ini adalah Server Action
+  await logUniqueVisit(path);
 
   console.log(`Fetching post: ${category}/${section}/${slug}`);
 
@@ -129,14 +136,6 @@ export default async function PostDetailPage({
           )}
         </div>
       </div>
-
-      {/* Related Posts Section (Optional) */}
-      {/* <div className="mt-12 pt-8 border-t border-gray-200">
-        <h3 className="text-xl font-semibold mb-4">Related Posts</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          // You can add related posts fetching here
-        </div>
-      </div> */}
     </div>
   );
 }

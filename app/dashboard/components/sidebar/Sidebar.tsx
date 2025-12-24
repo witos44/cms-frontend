@@ -42,8 +42,12 @@ export function DashboardSidebar() {
           <Link href="/dashboard/posts" className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent">
             <FileText className="inline mr-2 h-4 w-4" /> Posts
           </Link>
-          <Link href="/dashboard/categories" className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent">
-            <Folder className="inline mr-2 h-4 w-4" /> Categories
+          <Link
+              href="/dashboard/settings"
+              className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent"
+            >
+              <Settings className="inline mr-2 h-4 w-4" />
+              Settings
           </Link>
           <Link href="/dashboard/users" className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent">
             <User className="inline mr-2 h-4 w-4" /> Users
@@ -52,9 +56,7 @@ export function DashboardSidebar() {
         <div className="p-4 border-t">
           <Accordion type="single" collapsible defaultValue="settings">
             <AccordionItem value="settings">
-              <AccordionTrigger className="text-sm font-medium">
-                Settings <ChevronDown className="ml-2 h-4 w-4" />
-              </AccordionTrigger>
+              
               <AccordionContent>
                 <Link href="/dashboard/settings/general" className="block px-3 py-2 text-xs text-muted-foreground hover:text-foreground">
                   General

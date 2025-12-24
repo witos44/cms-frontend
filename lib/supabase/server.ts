@@ -1,24 +1,25 @@
 // lib/supabase/server.ts
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { headers } from 'next/headers';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export async function createClient() {
   const cookieStore = await cookies();
-  const headersList = await headers();
-  const host = headersList.get('host'); // e.g., "nsecure.store" or "nsecure.vercel.app"
+
+  // Tentukan domain dan secure berdasarkan host
+  const host = cookieStore.get('__next_host')?.value || 
+               (typeof window === 'undefined' ? process.env.VERCEL_URL || 'localhost' : window.location.host);
 
   let domain = '';
-  if (host?.endsWith('vercel.app')) {
+  if (host?.endsWith('.vercel.app')) {
     domain = '.vercel.app';
-  } else if (host && host !== 'localhost:3000') {
-    // Remove port if present (e.g., "nsecure.store:3000" → "nsecure.store")
+  } else if (host && !host.startsWith('localhost')) {
     const cleanHost = host.split(':')[0];
     if (cleanHost.includes('.')) {
       domain = `.${cleanHost}`;
     }
   }
+
+  const secure = !host?.startsWith('localhost');
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,42 +30,61 @@ export async function createClient() {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({
-            name,
-            value,
-            ...options,
-            ...(domain ? { domain } : {}),
-            secure: host !== 'localhost:3000',
-            sameSite: 'lax',
-            path: '/',
-          });
+          // ⚠️ Hanya set cookie jika diizinkan
+          try {
+            cookieStore.set({
+              name,
+              value,
+              ...options,
+              ...(domain ? { domain } : {}),
+              secure,
+              sameSite: 'lax',
+              path: '/',
+            });
+          } catch (error) {
+            // Abaikan error — terjadi di Page Component (Next.js 16+)
+            console.warn(`Failed to set cookie "${name}" (expected in Page Component)`);
+          }
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({
-            name,
-            value: '',
-            ...options,
-            ...(domain ? { domain } : {}),
-            secure: host !== 'localhost:3000',
-            sameSite: 'lax',
-            path: '/',
-          });
+          try {
+            cookieStore.set({
+              name,
+              value: '',
+              ...options,
+              ...(domain ? { domain } : {}),
+              secure,
+              sameSite: 'lax',
+              path: '/',
+              maxAge: 0,
+            });
+          } catch (error) {
+            // Abaikan error
+            console.warn(`Failed to remove cookie "${name}"`);
+          }
         },
       },
     }
   );
 }
 
-// Client khusus untuk akses publik tanpa session (untuk halaman yang diakses tanpa login)
+// Client publik tanpa sesi (untuk data publik seperti pencarian)
 export function createPublicClient() {
-  return createSupabaseClient(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
+      cookies: {
+        get() {
+          return null;
+        },
+        set() {
+          // Tidak pernah set cookie untuk client publik
+          throw new Error('Public client cannot set cookies');
+        },
+        remove() {
+          throw new Error('Public client cannot remove cookies');
+        },
       },
     }
   );

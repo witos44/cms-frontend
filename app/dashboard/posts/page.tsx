@@ -1,3 +1,5 @@
+//app/dashboard/posts/page.tsx
+
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
