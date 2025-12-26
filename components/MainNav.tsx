@@ -46,7 +46,7 @@ export default function MainNav() {
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-2">
             <img src="/nsecure.png" alt="nsecure" className="h-8 w-auto" />
-            <span className="hidden md:inline text-xl text-green-600">
+            <span className="hidden md:inline text-xl bg-linear-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
               Security & Privacy
             </span>
           </Link>
