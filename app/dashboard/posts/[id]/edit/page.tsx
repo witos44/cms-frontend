@@ -51,7 +51,6 @@ const SECTION_MAP: Record<string, { value: string; label: string }[]> = {
     { value: 'encryption-tools', label: 'Encryption Tools' },
     { value: 'open-source-only', label: 'Open Source Only' },
     { value: 'self-hosted-tools', label: 'Self-Hosted Tools' },
-    
   ],
   'deals': [
     { value: 'nordvpn-deals', label: 'NordVPN Deals' },
@@ -99,14 +98,12 @@ export default function EditPostPage() {
           return;
         }
 
-        console.log('Fetched data:', data); // Debug log
-
-        // PERBAIKAN DI SINI: Handle null/undefined values
+        // Handle null values from database
         setTitle(data.title || '');
         setSlug(data.slug || '');
         setContent(data.content || '');
         setCategory(data.category || '');
-        setSection(data.section || ''); // Pastikan section di-set, bahkan jika null
+        setSection(data.section || ''); // Convert null to empty string
         setCoverImage(data.cover_image || null);
         setInitialDataLoaded(true);
       } catch (error) {
@@ -137,6 +134,9 @@ export default function EditPostPage() {
     try {
       const images = extractImagesFromHTML(content);
 
+      // ✅ KOREKSI UTAMA: Konversi string kosong ke null
+      const sectionValue = section.trim() === '' ? null : section.trim();
+
       const { error } = await supabase
         .from('posts')
         .update({
@@ -144,7 +144,7 @@ export default function EditPostPage() {
           slug: slug.trim(),
           content: content.trim(),
           category: category.trim(),
-          section: section.trim(), // Pastikan section di-update
+          section: sectionValue, // ✅ Kirim null jika kosong
           cover_image: coverImage,
           images,
           updated_at: new Date().toISOString(),
@@ -182,13 +182,16 @@ export default function EditPostPage() {
     setPublishing(true);
 
     try {
+      // ✅ KOREKSI UTAMA: Pastikan section dikirim sebagai null jika kosong
+      const sectionValue = section.trim() === '' ? null : section.trim();
+
       const res = await fetch('/api/admin/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           id, 
-          category: category.trim(), 
-          section: section.trim() // Pastikan section dikirim
+          category: category.trim(),
+          section: sectionValue, // ✅ Kirim null jika kosong
         }),
       });
 
@@ -253,8 +256,7 @@ export default function EditPostPage() {
             value={category}
             onValueChange={(val) => {
               setCategory(val);
-              // Reset section ketika category berubah
-              setSection('');
+              setSection(''); // Reset section when category changes
             }}
           >
             <SelectTrigger className="w-full">
@@ -335,7 +337,7 @@ export default function EditPostPage() {
         <h3 className="font-medium mb-2">Debug Info:</h3>
         <p>Category: <span className="font-mono">{category || '(empty)'}</span></p>
         <p>Section: <span className="font-mono">{section || '(empty)'}</span></p>
-        <p>Will be saved to database: category="{category}", section="{section}"</p>
+        <p>Will be saved as: category="{category}", section={section.trim() === '' ? 'NULL' : `"${section}"`}</p>
       </div>
     </div>
   );
