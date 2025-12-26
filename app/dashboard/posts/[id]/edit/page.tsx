@@ -52,7 +52,7 @@ const SECTION_MAP: Record<string, { value: string; label: string }[]> = {
     { value: 'open-source-only', label: 'Open Source Only' },
     { value: 'self-hosted-tools', label: 'Self-Hosted Tools' },
   ],
-  'deals': [
+  deals: [
     { value: 'nordvpn-deals', label: 'NordVPN Deals' },
     { value: '1password-deals', label: '1Password Deals' },
     { value: 'proton-unlimited-deals', label: 'Proton Unlimited Deals' },
@@ -75,269 +75,202 @@ export default function EditPostPage() {
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
-  const [section, setSection] = useState('');
+  const [section, setSection] = useState(''); // ✅ Tambahkan state section
   const [coverImage, setCoverImage] = useState<string | null>(null);
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   /* ================= FETCH POST ================= */
   useEffect(() => {
-    if (!id || initialDataLoaded) return;
+    if (!id) return;
 
     const fetchPost = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('posts')
-          .select('title, slug, content, category, section, cover_image')
-          .eq('id', id)
-          .single();
+      const { data, error } = await supabase
+        .from('posts')
+        .select('title, slug, content, category, section, cover_image') // ✅ Ambil section
+        .eq('id', id)
+        .single();
 
-        if (error || !data) {
-          toast.error('Failed to load post');
-          setLoading(false);
-          setInitialDataLoaded(true);
-          return;
-        }
-
-        // Handle null values from database
-        setTitle(data.title || '');
-        setSlug(data.slug || '');
-        setContent(data.content || '');
-        setCategory(data.category || '');
-        setSection(data.section || ''); // Convert null to empty string
-        setCoverImage(data.cover_image || null);
-        setInitialDataLoaded(true);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        toast.error('Error loading post');
-      } finally {
-        setLoading(false);
+      if (error || !data) {
+        toast.error('Failed to load post');
+        return;
       }
+
+      setTitle(data.title ?? '');
+      setSlug(data.slug ?? '');
+      setContent(data.content ?? '');
+      setCategory(data.category ?? '');
+      setSection(data.section ?? ''); // ✅ Set section
+      setCoverImage(data.cover_image ?? null);
+      setLoading(false);
     };
 
     fetchPost();
-  }, [id, supabase, initialDataLoaded]);
+  }, [id, supabase]);
 
-  /* ================= SAVE ================= */
-  const handleSave = async () => {
-    if (!category) {
-      toast.error('Category is required');
+  /* ================= COVER UPLOAD ================= */
+  const handleCoverUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('postId', id);
+
+    const res = await fetch('/api/admin/upload-cover', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      toast.error('Upload cover image failed');
       return;
     }
 
-    if (!section) {
-      toast.error('Section is required');
+    const data = await res.json();
+    setCoverImage(data.url);
+  };
+
+  /* ================= SAVE DRAFT ================= */
+  const handleSave = async () => {
+    if (!category || !section) {
+      toast.error('Category and section are required');
       return;
     }
 
     setSaving(true);
 
-    try {
-      const images = extractImagesFromHTML(content);
+    const images = extractImagesFromHTML(content);
 
-      // ✅ KOREKSI UTAMA: Konversi string kosong ke null
-      const sectionValue = section.trim() === '' ? null : section.trim();
+    const { error } = await supabase
+      .from('posts')
+      .update({
+        title,
+        slug,
+        content,
+        category,
+        section, // ✅ Simpan section
+        cover_image: coverImage,
+        images,
+      })
+      .eq('id', id);
 
-      const { error } = await supabase
-        .from('posts')
-        .update({
-          title: title.trim(),
-          slug: slug.trim(),
-          content: content.trim(),
-          category: category.trim(),
-          section: sectionValue, // ✅ Kirim null jika kosong
-          cover_image: coverImage,
-          images,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', id);
+    setSaving(false);
 
-      if (error) {
-        console.error('Save error:', error);
-        toast.error(`Save failed: ${error.message}`);
-        return;
-      }
-
-      toast.success('Draft saved successfully');
-      router.push('/dashboard/posts');
-    } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Failed to save draft');
-    } finally {
-      setSaving(false);
+    if (error) {
+      toast.error(error.message);
+      return;
     }
+
+    toast.success('Draft saved');
+    router.push('/dashboard/posts');
   };
 
   /* ================= PUBLISH ================= */
   const handlePublish = async () => {
-    if (!category || !category.trim()) {
-      toast.error('Category is required');
-      return;
-    }
-
-    if (!section || !section.trim()) {
-      toast.error('Section is required');
+    if (!category || !section) {
+      toast.error('Category and section are required');
       return;
     }
 
     setPublishing(true);
 
-    try {
-      // ✅ KOREKSI UTAMA: Pastikan section dikirim sebagai null jika kosong
-      const sectionValue = section.trim() === '' ? null : section.trim();
+    const res = await fetch('/api/admin/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, category, section }), // ✅ Kirim section
+    });
 
-      const res = await fetch('/api/admin/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          id, 
-          category: category.trim(),
-          section: sectionValue, // ✅ Kirim null jika kosong
-        }),
-      });
+    setPublishing(false);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error('Publish API error:', data);
-        toast.error(`Publish failed: ${data.error || 'Unknown error'}`);
-        return;
-      }
-
-      toast.success('Post published successfully');
-      router.push('/dashboard/posts');
-    } catch (error) {
-      console.error('Publish error:', error);
-      toast.error('Failed to publish post');
-    } finally {
-      setPublishing(false);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      toast.error(err.error || 'Publish failed');
+      return;
     }
+
+    toast.success('Post published');
+    router.push('/dashboard/posts');
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading post...</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Edit Post</h1>
-        <div className="text-sm text-gray-500">
-          ID: {id} | Category: {category || 'Not set'} | Section: {section || 'Not set'}
-        </div>
-      </div>
+    <div className="p-6 space-y-6 max-w-5xl">
+      <h1 className="text-2xl font-bold">Edit Post</h1>
 
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">Title</label>
-          <Input 
-            value={title} 
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Enter post title"
+      <Input
+        placeholder="Post title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+
+      <Input
+        placeholder="Slug"
+        value={slug}
+        onChange={(e) => setSlug(e.target.value)}
+      />
+
+      {/* CATEGORY */}
+      <Select value={category} onValueChange={(val) => {
+        setCategory(val);
+        setSection(''); // Reset section saat ganti category
+      }}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="reviews">Reviews</SelectItem>
+          <SelectItem value="guides">Guides</SelectItem>
+          <SelectItem value="tools">Tools</SelectItem>
+          <SelectItem value="deals">Deals</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* SECTION (muncul setelah category dipilih) */}
+      {category && (
+        <Select value={section} onValueChange={setSection}>
+          <SelectTrigger>
+            <SelectValue placeholder={`Select section in ${category}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {SECTION_MAP[category]?.map((s) => (
+              <SelectItem key={s.value} value={s.value}>
+                {s.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      {/* COVER IMAGE */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Cover Image</label>
+        {coverImage && (
+          <img
+            src={coverImage}
+            alt="Cover"
+            className="w-full h-64 object-cover rounded-md border"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Slug</label>
-          <Input 
-            value={slug} 
-            onChange={e => setSlug(e.target.value)}
-            placeholder="post-url-slug"
-          />
-        </div>
-
-        {/* CATEGORY SELECT */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Category *</label>
-          <Select
-            value={category}
-            onValueChange={(val) => {
-              setCategory(val);
-              setSection(''); // Reset section when category changes
-            }}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="reviews">Reviews</SelectItem>
-              <SelectItem value="guides">Guides</SelectItem>
-              <SelectItem value="tools">Tools</SelectItem>
-              <SelectItem value="deals">Deals</SelectItem>
-            </SelectContent>
-          </Select>
-          {!category && (
-            <p className="text-sm text-red-500 mt-1">Please select a category</p>
-          )}
-        </div>
-
-        {/* SECTION SELECT */}
-        {category && (
-          <div>
-            <label className="block text-sm font-medium mb-2">Section *</label>
-            <Select 
-              value={section} 
-              onValueChange={setSection}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={`Select a section in ${category}`} />
-              </SelectTrigger>
-              <SelectContent>
-                {SECTION_MAP[category]?.map((s) => (
-                  <SelectItem key={s.value} value={s.value}>
-                    {s.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {!section && (
-              <p className="text-sm text-red-500 mt-1">Please select a section</p>
-            )}
-          </div>
         )}
-
-        {/* EDITOR */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Content</label>
-          <PostEditor content={content} onChange={setContent} />
-        </div>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleCoverUpload(file);
+          }}
+        />
       </div>
 
-      {/* BUTTONS */}
-      <div className="flex gap-4 pt-4 border-t">
-        <Button 
-          onClick={() => router.push('/dashboard/posts')}
-          variant="outline"
-        >
-          Cancel
+      <PostEditor content={content} onChange={setContent} />
+
+      <div className="flex gap-2">
+        <Button onClick={handleSave} disabled={saving || !category || !section}>
+          Save Draft
         </Button>
-        
-        <Button 
-          onClick={handleSave} 
-          disabled={saving || !category || !section}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          {saving ? 'Saving...' : 'Save Draft'}
-        </Button>
-        
-        <Button 
-          onClick={handlePublish} 
-          disabled={publishing || !category || !section}
+        <Button
           className="bg-green-600 hover:bg-green-700"
+          onClick={handlePublish}
+          disabled={publishing || !category || !section}
         >
-          {publishing ? 'Publishing...' : 'Publish'}
+          Publish
         </Button>
-      </div>
-
-      {/* DEBUG INFO */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg text-sm">
-        <h3 className="font-medium mb-2">Debug Info:</h3>
-        <p>Category: <span className="font-mono">{category || '(empty)'}</span></p>
-        <p>Section: <span className="font-mono">{section || '(empty)'}</span></p>
-        <p>Will be saved as: category="{category}", section={section.trim() === '' ? 'NULL' : `"${section}"`}</p>
       </div>
     </div>
   );
