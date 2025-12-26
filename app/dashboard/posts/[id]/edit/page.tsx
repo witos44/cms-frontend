@@ -75,7 +75,7 @@ export default function EditPostPage() {
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
-  const [section, setSection] = useState(''); // ✅ Tambahkan state section
+  const [section, setSection] = useState('');
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
   /* ================= FETCH POST ================= */
@@ -85,7 +85,7 @@ export default function EditPostPage() {
     const fetchPost = async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('title, slug, content, category, section, cover_image') // ✅ Ambil section
+        .select('title, slug, content, category, section, cover_image')
         .eq('id', id)
         .single();
 
@@ -98,7 +98,7 @@ export default function EditPostPage() {
       setSlug(data.slug ?? '');
       setContent(data.content ?? '');
       setCategory(data.category ?? '');
-      setSection(data.section ?? ''); // ✅ Set section
+      setSection(data.section ?? '');
       setCoverImage(data.cover_image ?? null);
       setLoading(false);
     };
@@ -144,7 +144,7 @@ export default function EditPostPage() {
         slug,
         content,
         category,
-        section, // ✅ Simpan section
+        section,
         cover_image: coverImage,
         images,
       })
@@ -173,7 +173,7 @@ export default function EditPostPage() {
     const res = await fetch('/api/admin/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, category, section }), // ✅ Kirim section
+      body: JSON.stringify({ id, category, section }),
     });
 
     setPublishing(false);
@@ -209,7 +209,7 @@ export default function EditPostPage() {
       {/* CATEGORY */}
       <Select value={category} onValueChange={(val) => {
         setCategory(val);
-        setSection(''); // Reset section saat ganti category
+        setSection('');
       }}>
         <SelectTrigger>
           <SelectValue placeholder="Select category" />
@@ -222,7 +222,7 @@ export default function EditPostPage() {
         </SelectContent>
       </Select>
 
-      {/* SECTION (muncul setelah category dipilih) */}
+      {/* SECTION */}
       {category && (
         <Select value={section} onValueChange={setSection}>
           <SelectTrigger>
