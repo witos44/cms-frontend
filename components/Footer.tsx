@@ -78,6 +78,9 @@ export default function Footer() {
           <Link href="/methodology" className="hover:underline">
             Review Methodology
           </Link>
+          <Link href="/gdpr" className="hover:underline">
+            GDPR Compliance
+          </Link>
         </div>
       </div>
     </footer>

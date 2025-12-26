@@ -1,17 +1,21 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from 'next/font/google';
 import "./globals.css";
 
 import MainNav from "@/components/MainNav";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner"; // ← INI SAJA
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'], // sesuaikan berat yang dibutuhkan
+  variable: '--font-roboto',
+});
 
 export const metadata: Metadata = {
   title: "NetSecure",
-  description: "Security tools & remote work guides.",
+  description: "Security & Privacy Blog",
 };
 
 export default function RootLayout({
@@ -30,7 +34,7 @@ export default function RootLayout({
         <meta httpEquiv="Content-Language" content="en" />
       </head>
 
-      <body className={inter.className}>
+      <body className={roboto.variable}>
         <MainNav />
 
         <main className="pt-16">{children}</main>

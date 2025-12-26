@@ -10,9 +10,9 @@ export default function CreatePostPage() {
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
-  const [category, setCategory] = useState('guides');
-  const [section, setSection] = useState('security-basics');
-  const [content, setContent] = useState('<p>Ketik konten di sini...</p>');
+  const [category, setCategory] = useState('reviews');
+  const [section, setSection] = useState('best-vpns');
+  const [content, setContent] = useState('<p>Your Text here...</p>');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
